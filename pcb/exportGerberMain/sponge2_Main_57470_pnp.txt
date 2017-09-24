@@ -1,0 +1,56 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=sponge2_Main_57470
+*Date=17:16:50
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;THT;80.1082;-4.43786;90;Bottom;power
+2;;;44.196;-8.0997;0;Bottom;Via164
+3;;;49.1043;-14.5979;0;Bottom;FeatherM0
+4;;;19.2024;-10.5381;0;Bottom;Via179
+5;;5 mm [THT];5.09598;-27.0959;90;Bottom;LED1
+6;;;41.7576;-9.9285;0;Bottom;Via166
+7;;THT;69.9928;-39.2048;0;Bottom;J9
+8;;;49.0728;-48.9429;0;Bottom;Via160
+9;;;39.9288;-39.1893;0;Bottom;Via158
+10;;;43.5864;-11.1477;0;Bottom;Via177
+11;;THT;2.5558;-3.64482;0;Bottom;fsr1
+12;;;45.4152;-13.5861;0;Bottom;Via156
+13;;;53.34;-46.5045;0;Bottom;Via159
+14;;;28.3464;-34.3125;0;Bottom;Via176
+15;;;15.2558;-22.6948;0;Bottom;Hole22
+16;;;83.8358;-50.6348;0;Bottom;Hole20
+17;;;71.628;-50.7717;0;Bottom;Via162
+18;;;59.436;-16.6341;0;Bottom;Via161
+19;;;16.1544;-9.3189;0;Bottom;Via180
+20;;;61.2648;-41.6277;0;Bottom;Via172
+21;;;83.2104;-14.8053;0;Bottom;Via173
+22;1.1k;THT;12.7158;-2.37482;180;Bottom;R1
+23;;;56.9976;-32.4837;0;Bottom;Via155
+24;;;63.7032;-45.2853;0;Bottom;Via181
+25;1.1k;THT;12.7158;-4.91482;180;Bottom;R2
+26;;;60.6552;-46.5045;0;Bottom;Via174
+27;;;33.2232;-34.9221;0;Bottom;Via169
+28;;;78.7558;-12.5348;0;Bottom;Hole23
+29;;;83.2104;-19.0725;0;Bottom;Via170
+30;;;58.8264;-34.3125;0;Bottom;Via178
+31;;;35.052;-29.4357;0;Bottom;Via157
+32;470;THT;12.7158;-7.45482;0;Bottom;R3
+33;;;74.676;-48.3333;0;Bottom;Via163
+34;;;51.5112;-36.7509;0;Bottom;Via168
+35;;;24.6888;-30.0453;0;Bottom;Via167
+36;;;33.0358;-40.4748;0;Bottom;Hole21
+37;;;38.1;-40.4085;0;Bottom;Via165
+38;;;58.8264;-40.4085;0;Bottom;Via175
+39;1.9 to 3.6V;;12.6396;-42.9386;180;Bottom;Part1
+40;;;63.7032;-47.1141;0;Bottom;Via171
+41;;THT;44.5928;-40.4748;180;Bottom;J12

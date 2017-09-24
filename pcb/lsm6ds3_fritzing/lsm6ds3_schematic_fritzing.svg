@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg92"
+   viewBox="0 0 122.4 86.4"
+   height="1.2in"
+   width="1.7in"
+   y="0in"
+   x="0in"
+   version="1.2">
+  <metadata
+     id="metadata98">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs96" />
+  <rect
+     style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round"
+     id="rect2"
+     width="93.150002"
+     x="14.4"
+     y="14.4"
+     height="57.599998" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="36"
+     font-size="3.5"
+     id="label">SparkFun</text>
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="39.5"
+     font-size="3.5"
+     id="text5">LSM6DS3</text>
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="43"
+     font-size="3.5"
+     id="text7">6</text>
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="46.5"
+     font-size="3.5"
+     id="text9">DOF</text>
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="50"
+     font-size="3.5"
+     id="text11">IMU</text>
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:middle;fill:#000000;stroke:none"
+     x="61.200001"
+     y="53.5"
+     font-size="3.5"
+     id="text13">Breakout</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line15"
+     y2="36"
+     x2="14.4"
+     x1="0.34999901"
+     y1="36" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     x="0"
+     y="35.650002"
+     height="0.69999802"
+     id="connector6pin"
+     connectorName="!CS_MAG" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="0"
+     y="35.650002"
+     height="0.69999802"
+     id="connector18terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:start;fill:#8c8c8c;stroke:none"
+     x="15.8"
+     y="36.700001"
+     font-size="3.5"
+     id="label18">CS</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line20"
+     y2="43.200001"
+     x2="14.4"
+     x1="0.34999901"
+     y1="43.200001" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     x="0"
+     y="42.849998"
+     height="0.69999802"
+     id="connector9pin"
+     connectorName="!CS_XL" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="0"
+     y="42.849998"
+     height="0.69999802"
+     id="connector16terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:start;fill:#8c8c8c;stroke:none"
+     x="15.8"
+     y="43.900002"
+     font-size="3.5"
+     id="label16">OCS</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line25"
+     y2="50.400002"
+     x2="14.4"
+     x1="0.34999901"
+     y1="50.400002" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     x="0"
+     y="50.049999"
+     height="0.69999802"
+     id="connector10pin"
+     connectorName="DRDY_MAG" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="0"
+     y="50.049999"
+     height="0.69999802"
+     id="connector15terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:start;fill:#8c8c8c;stroke:none"
+     x="15.8"
+     y="51.099998"
+     font-size="3.5"
+     id="label15">SCX</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line30"
+     y2="28.800001"
+     x2="122.05"
+     x1="107.65"
+     y1="28.800001" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     connectorname="SDA/SDI/SDO"
+     x="108"
+     y="28.450003"
+     height="0.69999802"
+     id="connector3pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="122.4"
+     y="35.650002"
+     height="0.69999802"
+     id="connector12terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none"
+     x="106.6"
+     y="29.500002"
+     font-size="3.5"
+     id="label12">SDA/MOSI</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line35"
+     y2="43.200001"
+     x2="122.05"
+     x1="107.65"
+     y1="43.200001" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     connectorname="SCL/SCLK"
+     x="108"
+     y="42.849998"
+     height="0.69999802"
+     id="connector4pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="122.4"
+     y="42.849998"
+     height="0.69999802"
+     id="connector13terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none"
+     x="106.6"
+     y="43.900002"
+     font-size="3.5"
+     id="label13">SCL/SCLK</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line40"
+     y2="50.400002"
+     x2="122.05"
+     x1="107.65"
+     y1="50.400002" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     connectorname="INT_XL"
+     x="108"
+     y="50.049999"
+     height="0.69999802"
+     id="connector7pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="122.4"
+     y="50.049999"
+     height="0.69999802"
+     id="connector14terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none"
+     x="106.6"
+     y="51.099998"
+     font-size="3.5"
+     id="label14">INT2</text>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line45"
+     y2="57.599998"
+     x2="122.05"
+     x1="107.65"
+     y1="57.599998" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="14.4"
+     connectorname="INT_MAG"
+     x="108"
+     y="57.25"
+     height="0.69999802"
+     id="connector8pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0"
+     x="122.4"
+     y="57.25"
+     height="0.69999802"
+     id="connector19terminal" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none"
+     x="106.6"
+     y="58.299999"
+     font-size="3.5"
+     id="label19">INT1</text>
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0.69999802"
+     x="57.25"
+     y="0"
+     height="0"
+     id="connector11terminal" />
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line63"
+     y2="14.4"
+     x2="64.800003"
+     x1="64.800003"
+     y1="0.34999901" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0.69999802"
+     connectorname="VCC"
+     x="64.449997"
+     y="0"
+     height="14.4"
+     id="connector2pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0.69999802"
+     x="64.449997"
+     y="0"
+     height="0"
+     id="connector17terminal" />
+  <g
+     id="g74"
+     transform="translate(66.2,16)">
+    <g
+       id="g72">
+      <g
+         id="g70"
+         transform="rotate(-90)">
+        <g
+           id="g68">
+          <text
+             style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none"
+             x="0"
+             y="0"
+             font-size="3.5"
+             id="label17">VCC</text>
+        </g>
+      </g>
+    </g>
+  </g>
+  <line
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round"
+     id="line76"
+     y2="86.050102"
+     x2="57.599998"
+     x1="57.599998"
+     y1="72" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0.69999802"
+     connectorname="GND"
+     x="57.25"
+     y="72"
+     height="14.4"
+     id="connector1pin" />
+  <rect
+     style="fill:none;stroke-width:0"
+     width="0.69999802"
+     x="57.25"
+     y="86.400002"
+     height="0"
+     id="connector10terminal" />
+  <g
+     id="g87"
+     transform="translate(59,70.4)">
+    <g
+       id="g85">
+      <g
+         id="g83"
+         transform="rotate(-90)">
+        <g
+           id="g81">
+          <text
+             style="font-size:3.5px;font-family:'Droid Sans';text-anchor:start;fill:#8c8c8c;stroke:none"
+             x="0"
+             y="0"
+             font-size="3.5"
+             id="label10">GND</text>
+        </g>
+      </g>
+    </g>
+  </g>
+  <line
+     y1="36"
+     x1="107.65"
+     x2="122.05"
+     y2="36"
+     id="line1024"
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round" />
+  <rect
+     id="connector5pin"
+     height="0.69999802"
+     y="35.650002"
+     x="108"
+     connectorname="SDA/SDI/SDO"
+     width="14.4"
+     style="fill:none;stroke-width:0" />
+  <text
+     id="text1028"
+     font-size="3.5"
+     y="36.700001"
+     x="106.6"
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:end;fill:#8c8c8c;stroke:none">SDO/MISO</text>
+  <line
+     y1="57.600002"
+     x1="0.34999901"
+     x2="14.4"
+     y2="57.600002"
+     id="line1030"
+     style="fill:none;stroke:#787878;stroke-width:0.69999802;stroke-linecap:round;stroke-linejoin:round" />
+  <text
+     style="font-size:3.5px;font-family:'Droid Sans';text-anchor:start;fill:#8c8c8c;stroke:none"
+     x="15.8"
+     y="58.299999"
+     font-size="3.5"
+     id="text1034">SDX</text>
+  <rect
+     connectorName="DRDY_MAG"
+     id="connector11pin"
+     height="0.69999802"
+     y="57.25"
+     x="0"
+     width="14.4"
+     style="fill:none;stroke-width:0" />
+</svg>

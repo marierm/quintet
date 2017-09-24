@@ -1,0 +1,43 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=sponge2_Buttons_854348090
+*Date=17:17:07
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;44.5754;-9.55054;0;Bottom;S3
+2;;;82.806;-10.0295;0;Bottom;Hole8
+3;;;68.8264;-10.141;0;Bottom;Hole13
+4;;;25.6386;-10.0295;0;Bottom;Hole19
+5;;;4.57015;-4.19145;0;Bottom;Hole3
+6;;;4.43127;-15.0193;0;Bottom;Hole4
+7;;;125.339;-4.19143;0;Bottom;Hole2
+8;;;87.8838;-10.176;0;Bottom;Hole10
+9;;THT;116.576;-9.27144;180;Bottom;J13
+10;;;108.814;-2.01681;0;Bottom;Via124
+11;;;49.7533;-10.1495;0;Bottom;Hole14
+12;;;39.6097;-10.1495;0;Bottom;Hole15
+13;;;101.785;-10.0295;0;Bottom;Hole5
+14;;;96.7196;-10.176;0;Bottom;Hole6
+15;;;44.6755;-10.0031;0;Bottom;Hole16
+16;;;121.615;-4.45521;0;Bottom;Via125
+17;;;82.6213;-9.55054;0;Bottom;S1
+18;;;30.7163;-10.176;0;Bottom;Hole17
+19;;;77.7401;-10.176;0;Bottom;Hole9
+20;;;101.712;-9.55054;0;Bottom;S0
+21;;;20.5727;-10.176;0;Bottom;Hole18
+22;;;106.863;-10.176;0;Bottom;Hole7
+23;;;63.5848;-9.55054;0;Bottom;S2
+24;;;106.375;-16.6472;0;Bottom;Via123
+25;;;25.5389;-9.55054;0;Bottom;S4
+26;;;125.339;-14.3514;0;Bottom;Hole1
+27;;;63.7487;-9.99457;0;Bottom;Hole11
+28;;;58.6828;-10.141;0;Bottom;Hole12

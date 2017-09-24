@@ -1,0 +1,27 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=sponge2_leftHand_854590560
+*Date=17:17:23
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;64.1615;-17.683;0;Bottom;Via153
+2;;;38.5583;-11.587;0;Bottom;Via151
+3;1.9 to 3.6V;;22.2374;-13.7113;180;Bottom;Part2
+4;;THT;43.8782;-16.3275;0;Bottom;J11
+5;;;42.4812;-3.62749;0;Bottom;Hole26
+6;;THT;58.8642;-15.0575;180;Bottom;J10
+7;;THT;4.38116;-15.0575;0;Bottom;fsr2
+8;;;4.38116;-23.9475;0;Bottom;Hole25
+9;;;64.1615;-24.9982;0;Bottom;Via152
+10;;;39.1679;-22.5598;0;Bottom;Via154
+11;;;53.7983;-18.2926;0;Bottom;Via150
+12;;;4.38116;-6.16749;0;Bottom;Hole24
