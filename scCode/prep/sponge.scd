@@ -1,7 +1,7 @@
 PR(\abstractProcess).v.clone({
 	// This table is used to invert the bit order of the buttons.  This is
 	// useful when controling pitch with the buttons.
-	~ip = "192.168.109.10";
+	~ip = nil;
 	~defName = \sponge01;
 	~numBits = 5;
 	~conversionTable = (0..(2.pow(~numBits) - 1)).collect({|i|
@@ -10,21 +10,21 @@ PR(\abstractProcess).v.clone({
 	~asPattern = {
 	};
 	~prep = {
+		~ip.isNil.if({
+			~netAddress = nil;
+		},{
+			~netAddress = NetAddr(~ip, 50502);
+		});
+		
 		// This damper synth conditions the fsr data to make it suitable for
 		// damping the rods.
 		Server.default.waitForBoot({
-			// open sponge port
-			// ~sponge = SpongeOSC();
-			// ~sponge = SpongeSLIP(baudRate:115200);
 			~sponge = SpongeFeather(
 				"/sponge",
-				// ~defName,
-				NetAddr(~ip, 50502),
+				~netAddress,
 				50501,
 				currentEnvironment // To execute the OSCfunc inside this environment.
 			);
-			// ~sponge.gui;
-			// ~sponge = SpongeEmu(baudRate:115200);
 			// activate the features needed
 			[
 				\acc1xHP, \acc1yHP, \acc1zHP,
