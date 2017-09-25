@@ -86,6 +86,8 @@ void setup(){
 
 
   delay(1000);
+  initAccelGyro();
+
   // SensorOne.begin();
   // SensorTwo.begin();
   if( SensorOne.begin() != 0 ) {
@@ -106,7 +108,6 @@ void setup(){
     Serial.println("Sensor with CS @ Pin 19 (A5) started.");
     Serial.write(END);
   }
-  initAccelGyro();
 }
 
 void loop(){
@@ -141,7 +142,7 @@ void loop(){
   // wait a bit.
   // delay(5);
   // Serial.println(WiFi.SSID());
-  delay(15);
+  delay(20); // 15 seems to be too short.
   
   // delay(1);
   // delayMicroseconds(10);
