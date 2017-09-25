@@ -191,7 +191,7 @@ void loop(){
 
   // wait a bit.
   // delay(5);
-  delay(3);
+  delay(20);
   // delay(1);
   // delayMicroseconds(10);
 

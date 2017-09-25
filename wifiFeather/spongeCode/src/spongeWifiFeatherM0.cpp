@@ -6,14 +6,24 @@
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <OSCData.h>
- 
+void SLIPSerialWrite(int value);
+void sendSpongeOSC();
+void initAccelGyro();
 
-const char* ssid     = "mmLinksysEA7500-2.4";
+//SLIP for wired serial backup.
+const byte END=192;
+const byte ESC=219;
+const byte ESC_END=220;
+const byte ESC_ESC=221;
+
+
+// const char* ssid     = "mmLinksysEA7500-2.4";
 // const char* ssid     = "sideroxylon";
-const char* password = "ddcgrvc4zw";
+// const char* password = "ddcgrvc4zw";
  
 WiFiUDP udp; // A UDP instance to let us send and receive packets over UDP
-const IPAddress outIp(192,168,109,103); // remote IP of your computer
+// const IPAddress outIp(192,168,109,103); // remote IP of your computer
+const IPAddress outIp(224,0,0,1); // remote IP for multicast
 // const IPAddress outIp(10,42,0,1); // remote IP of your computer
 const unsigned int outPort = 50501; // remote port to receive OSC
 const unsigned int localPort = 50502; // local port to listen for OSC packets
@@ -33,7 +43,6 @@ LSM6DS3 SensorTwo( SPI_MODE, 19 );  // pin A5 on feather
 void setup(){
   //Configure pins for Adafruit ATWINC1500 Feather
   WiFi.setPins(8,7,4,2);
-  
   Serial.begin(115200);
   analogReadResolution(12);
   // Make butPins INPUT pins with pull up resistor.
@@ -45,32 +54,110 @@ void setup(){
   /* Wire.begin(); */
 
   delay(100);
- 
   // We start by connecting to a WiFi network
  
-  Serial.println();
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+
+  // Serial.println();
+  // Serial.print("Connecting to ");
+  // Serial.println(ssid);
   
   // WiFi.begin(ssid, password);
-  WiFi.begin(ssid,password);
-  
+  // WiFi.begin(ssid,password);
+  WiFi.beginProvision();
   
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.write(END);
   }
  
-  Serial.println("");
-  Serial.println("WiFi connected");  
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  // Serial.println("");
+  // Serial.println("WiFi connected");  
+  // Serial.print("IP address: ");
+  // Serial.println(WiFi.localIP());
 
-  Serial.println("Starting UDP");
-  udp.begin(localPort);
-  Serial.print("Local port: ");
-  Serial.println(localPort);
+  // Serial.print("SSID: ");
+  // Serial.println(WiFi.SSID());
+
+  // Serial.println("Starting UDP");
+  // udp.begin(localPort);
+  udp.beginMulti(outIp, localPort);
+  // Serial.print("Local port: ");
+  // Serial.println(localPort);
+
+
+  delay(1000);
+  // SensorOne.begin();
+  // SensorTwo.begin();
+  if( SensorOne.begin() != 0 ) {
+    Serial.write(END);
+    Serial.println("Problem starting the sensor with CS @ Pin 18 (A4).");
+    Serial.write(END);
+  } else {
+    Serial.write(END);
+    Serial.println("Sensor with CS @ Pin 18 (A4) started.");
+    Serial.write(END);
+  }
+  if( SensorTwo.begin() != 0 ) {
+    Serial.write(END);
+    Serial.println("Problem starting the sensor with CS @ Pin 19 (A5).");
+    Serial.write(END);
+  } else {
+    Serial.write(END);
+    Serial.println("Sensor with CS @ Pin 19 (A5) started.");
+    Serial.write(END);
+  }
+  initAccelGyro();
+}
+
+void loop(){
+  OSCMessage message;
+  int size = udp.parsePacket();
+
+  if (size) {
+    while (size--) {
+      message.fill(udp.read());
+    }
+    if (!message.hasError()) {
+      /* message.dispatch("/set_register", osc_set_register); */
+    } else {
+      error = message.getError();
+      Serial.print("error: ");
+      Serial.println(error);
+    }
+  }
+
+  // Serial.println( (SensorOne.readRawAccelX() >> 6) + 512);
+  // Serial.print(SensorOne.readRawAccelY());
+  // Serial.print(SensorOne.readRawAccelZ());
+  // Serial.print(SensorOne.readRawGyroX());
+  // Serial.print(SensorOne.readRawGyroY());
+  // Serial.print(SensorOne.readRawGyroZ());
+
+  sendSpongeOSC();
+  
+  // int anal0 = analogRead(1);
+  // OSCBundle bndl;
+
+  // wait a bit.
+  // delay(5);
+  // Serial.println(WiFi.SSID());
+  delay(15);
+  
+  // delay(1);
+  // delayMicroseconds(10);
+
+  // if (WiFi.status() != WL_CONNECTED) {
+  //   // WiFi.end();
+  //   while (WiFi.begin(ssid) != WL_CONNECTED) {
+  //     delay(500);
+  //     Serial.print(".");
+  //   }
+  //   Serial.print("Reconnected to ");
+  //   Serial.print(ssid);
+  // }
+}
+
+void initAccelGyro(){
   //Over-ride default settings if desired
   SensorOne.settings.gyroEnabled = 1;  //Can be 0 or 1
   SensorOne.settings.gyroRange = 2000;   //Max deg/s.  Can be: 125, 245, 500, 1000, 2000
@@ -99,51 +186,12 @@ void setup(){
   //  3 (Continuous during trigger)
   //  4 (Bypass until trigger)
   //  6 (Continous mode)
-
-
-  delay(1000);
-  if( SensorOne.begin() != 0 ) {
-    Serial.println("Problem starting the sensor with CS @ Pin 18 (A4).");
-  } else {
-    Serial.println("Sensor with CS @ Pin 18 (A4) started.");
-  }
-  if( SensorTwo.begin() != 0 ) {
-    Serial.println("Problem starting the sensor with CS @ Pin 19 (A5).");
-  } else {
-    Serial.println("Sensor with CS @ Pin 19 (A5) started.");
-  }
 }
 
-void loop(){
-  OSCMessage message;
-  int size = udp.parsePacket();
-  int butVal[10]; // valeurs des boutons
+
+void sendSpongeOSC() {
   int compButVal=0; // composed into a single 32 bit integer (only 10 are used).
-  int analVal[2]; // valeurs des capateurs analogiques
 
-  if (size) {
-    while (size--) {
-      message.fill(udp.read());
-    }
-    if (!message.hasError()) {
-      /* message.dispatch("/set_register", osc_set_register); */
-    } else {
-      error = message.getError();
-      Serial.print("error: ");
-      Serial.println(error);
-    }
-  }
-
-  // Serial.println( (SensorOne.readRawAccelX() >> 6) + 512);
-  // Serial.print(SensorOne.readRawAccelY());
-  // Serial.print(SensorOne.readRawAccelZ());
-  // Serial.print(SensorOne.readRawGyroX());
-  // Serial.print(SensorOne.readRawGyroY());
-  // Serial.print(SensorOne.readRawGyroZ());
-
-
-  // int anal0 = analogRead(1);
-  // OSCBundle bndl;
   OSCMessage msg("/sponge"); // 8 bytes
   // OSCMessage time("/time");
   // uint64_t timetag;
@@ -162,14 +210,12 @@ void loop(){
   // msg.add(int(SensorTwo.readRawGyroY()));
   // msg.add(int(SensorTwo.readRawGyroZ()));
   for (int i=0; i < 2; i ++){ // ints 6 and 7
-    analVal[i] = analogRead(i);
     msg.add(int(analogRead(i)));
   };
 
 
   for (int i=0; i < 10; i ++){
-    butVal[i] = digitalRead(butPins[i]);
-    compButVal |= (butVal[i] << (9-i));
+    compButVal |= ( digitalRead(butPins[i]) << (9-i));
     /* La ligne précédente place les valeurs binaires de chacun des boutons
        dans un seul entier à 16 bit.  Si on représente l'entier en binaire:
        (b01001011001 = d601),  on a une représentation des boutons activés.
@@ -188,20 +234,20 @@ void loop(){
   msg.send(udp);
   udp.endPacket();
   msg.empty();
+}
 
-  // wait a bit.
-  // delay(5);
-  delay(20);
-  // delay(1);
-  // delayMicroseconds(10);
 
-  if (WiFi.status() != WL_CONNECTED) {
-    // WiFi.end();
-    while (WiFi.begin(ssid) != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-    Serial.print("Reconnected to ");
-    Serial.print(ssid);
+void SLIPSerialWrite(int value){
+  if(value == END) {
+    Serial.write(ESC);
+    Serial.write(ESC_END);
+    return;
+  } else if (value == ESC) {
+    Serial.write(ESC);
+    Serial.write(ESC_ESC);
+    return;
+  } else {
+    Serial.write(value);
+    return;
   }
 }
