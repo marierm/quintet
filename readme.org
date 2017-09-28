@@ -1,0 +1,9 @@
+* Intro
+  <2017-09-25 Mon> This repository contains all the files used for
+  designing, building and playing the sponge.  This version is for the
+  new sponge quintet.  The sponges are based on the Adafruit Feather
+  M0 WiFi (with ATWINC1500 wifi chip).
+
+* Instructions 
+  On how to use the sponge with your comupter are in
+  scCode/instructions.org
