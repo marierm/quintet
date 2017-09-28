@@ -1,4 +1,3 @@
-
 (
 {
 	var sym = "sponge_solo".asSymbol;
