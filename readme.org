@@ -5,5 +5,6 @@
   M0 WiFi (with ATWINC1500 wifi chip).
 
 * Instructions 
-  On how to use the sponge with your comupter are in
-  scCode/instructions.org
+  Instructions on how to use the sponge with your comupter are in
+  =scCode/instructions.org= or =scCode/instructions.pdf= .  They are
+  in French only at this point.
