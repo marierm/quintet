@@ -55,20 +55,21 @@ PR(\abstractProcess).v.clone({
 								\play.post; j.postln;
 								BP( (~defName ++ j).asSymbol ).play(0,doReset: true);
 							},
-							{ 			// 2
-								\pbOn.post; j.postln;
-								BP( (~defName ++ j).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-							},
-							{			// 4
-								\freeze.post; j.postln;
-								BP( (~defName ++ j).asSymbol ).freezeMe;
-							}
+							// { 			// 2
+							// 	\pbOn.post; j.postln;
+							// 	BP( (~defName ++ j).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
+							// },
+							// {			// 4
+							// 	\freeze.post; j.postln;
+							// 	BP( (~defName ++ j).asSymbol ).freezeMe;
+							// }
 						]),
 						0, Array.newClear(32).putEach([2, 8, 16],[
-							{ 			// 2
-								\pbOff.post; j.postln;
-								BP( (~defName ++ j).asSymbol ).pitcher.set(\bend, 0);
-							},
+							nil,
+							// { 			// 2
+							// 	\pbOff.post; j.postln;
+							// 	BP( (~defName ++ j).asSymbol ).pitcher.set(\bend, 0);
+							// },
 							{
 								("mode harmo " + (j + 1)).postln;
 								~butts.mode_(j + 5);
@@ -82,24 +83,24 @@ PR(\abstractProcess).v.clone({
 				)
 			};
 
-			~butts.modes[0].addFunc(
-				button:5,
-				function:{
-					\stop.post;	\feu.postln;
-					BP( (~defName ++ \feu ).asSymbol).stopNow;
-				},
-				levels: [0],
-				buttState: 1
-			);
-			~butts.modes[0].addFunc(
-				button:5,
-				function:{
-					\play.post; \feu.postln;
-					BP( (~defName ++ \feu ).asSymbol).play(0,doReset: true);
-				},
-				levels: [1],
-				buttState: 1
-			);
+			// ~butts.modes[0].addFunc(
+			// 	button:5,
+			// 	function:{
+			// 		\stop.post;	\feu.postln;
+			// 		BP( (~defName ++ \feu ).asSymbol).stopNow;
+			// 	},
+			// 	levels: [0],
+			// 	buttState: 1
+			// );
+			// ~butts.modes[0].addFunc(
+			// 	button:5,
+			// 	function:{
+			// 		\play.post; \feu.postln;
+			// 		BP( (~defName ++ \feu ).asSymbol).play(0,doReset: true);
+			// 	},
+			// 	levels: [1],
+			// 	buttState: 1
+			// );
 
 			// buttons 0 to 5 are made modifier keys.
 			~butts.modes[0].buttonFunctions[4..0].do{|i,j| i.makeModifier(j)};
@@ -153,15 +154,15 @@ PR(\abstractProcess).v.clone({
 				// Double click starts looper recording.
 				// Single click stops recording and starts playback.
 				// Triple click stops playback.
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\toggleRecording.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
+				// ~butts.modes[g].addFunc(
+				// 	button: 8,
+				// 	function: {
+				// 		\toggleRecording.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
+				// 	},
+				// 	levels: (0..31),
+				// 	buttState: 1
+				// );
 				// ~butts.modes[g].addFunc(
 				// 	button: 8,
 				// 	function: {
@@ -171,15 +172,15 @@ PR(\abstractProcess).v.clone({
 				// 	levels: (0..31),
 				// 	buttState: 2
 				// );
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\stopPlayback.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
-					},
-					levels: (0..31),
-					buttState: 2
-				);
+				// ~butts.modes[g].addFunc(
+				// 	button: 8,
+				// 	function: {
+				// 		\stopPlayback.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
+				// 	},
+				// 	levels: (0..31),
+				// 	buttState: 2
+				// );
 				// button 9 starts the voice.
 				// Double click stops it.
 				~butts.modes[g].addFunc(
@@ -266,23 +267,23 @@ PR(\abstractProcess).v.clone({
 				);
 
 				// button 6 + 7 = pitch bend
-				~butts.modes[g].addCombo(
-					comboBits: 2r0011000000,
-					function: {
-						\pbOn.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octReset;
-						BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-					},
-					buttState: 1
-				);
-				~butts.modes[g].addCombo(
-					comboBits: 2r0011000000,
-					function: {
-						\pbOff.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
-					},
-					buttState: 0
-				);
+				// ~butts.modes[g].addCombo(
+				// 	comboBits: 2r0011000000,
+				// 	function: {
+				// 		\pbOn.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).octReset;
+				// 		BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
+				// 	},
+				// 	buttState: 1
+				// );
+				// ~butts.modes[g].addCombo(
+				// 	comboBits: 2r0011000000,
+				// 	function: {
+				// 		\pbOff.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
+				// 	},
+				// 	buttState: 0
+				// );
 			};
 
 			// In modes 5 to 8, buttons 0 to 4 sets harmony of the
@@ -359,15 +360,15 @@ PR(\abstractProcess).v.clone({
 				// Double click starts looper recording.
 				// Single click stops recording and starts playback.
 				// Triple click stops playback.
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\toggleRecording.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
+				// ~butts.modes[g].addFunc(
+				// 	button: 8,
+				// 	function: {
+				// 		\toggleRecording.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
+				// 	},
+				// 	levels: (0..31),
+				// 	buttState: 1
+				// );
 				// ~butts.modes[g].addFunc(
 				// 	button: 8,
 				// 	function: {
@@ -377,15 +378,15 @@ PR(\abstractProcess).v.clone({
 				// 	levels: (0..31),
 				// 	buttState: 2
 				// );
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\stopPlayback.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
-					},
-					levels: (0..31),
-					buttState: 2
-				);
+				// ~butts.modes[g].addFunc(
+				// 	button: 8,
+				// 	function: {
+				// 		\stopPlayback.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
+				// 	},
+				// 	levels: (0..31),
+				// 	buttState: 2
+				// );
 
 
 				// Clicking on button 8 holds the current chord even if left
@@ -468,23 +469,23 @@ PR(\abstractProcess).v.clone({
 				);
 
 				// button 6 + 7 = pitch bend
-				~butts.modes[g].addCombo(
-					comboBits: 2r0011000000,
-					function: {
-						\pbOn.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octReset;
-						BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-					},
-					buttState: 1
-				);
-				~butts.modes[g].addCombo(
-					comboBits: 2r0011000000,
-					function: {
-						\pbOff.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
-					},
-					buttState: 0
-				);
+				// ~butts.modes[g].addCombo(
+				// 	comboBits: 2r0011000000,
+				// 	function: {
+				// 		\pbOn.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).octReset;
+				// 		BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
+				// 	},
+				// 	buttState: 1
+				// );
+				// ~butts.modes[g].addCombo(
+				// 	comboBits: 2r0011000000,
+				// 	function: {
+				// 		\pbOff.post; h.postln;
+				// 		BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
+				// 	},
+				// 	buttState: 0
+				// );
 			};
 
 		});
