@@ -21,6 +21,18 @@
   https://github.com/supercollider/sc3-plugins/releases Nous utilisons
   actuellement la version 3.8.0.
 
+  Une fois l'archive ZIP dépaquetée, le dossier =SC3plugins= et tout
+  son contenu doit être placé dans ce dossier (sur Mac):
+
+  =/Users/yourUserName/Library/Application Support/SuperCollider/Extensions=
+
+  Créez le dossier =Extensions= au besoin.
+
+  Pour connaître le dossier dans lequel vous devez déposer les
+  =SC3plugins= sur une autre plateforme (Windows ou Linux), démarrez
+  SuperCollider et cliquez sur l'item /Open user support directory/ du
+  menu /File/.
+
 * Installer tous les Quarks nécessaires
   La liste des quarks nécessaires est dans le fichier
   =scCode/installation.scd=
@@ -36,7 +48,7 @@
 
   Le fichier ZIP doit être dépaqueté dans ce dossier (sur mac):
 
-  =/Users/yourUserName/Library/SuperCollider/Extensions=
+  =/Users/yourUserName/Library/Application Support/SuperCollider/Extensions=
 
   Créez le dossier =Extensions= au besoin.
 
@@ -56,7 +68,9 @@
   la page web servie par l'éponge à l'adresse http://192.168.1.1 .
   Sur cette page, entrez le nom de votre point d'accès et le mot de
   passe correspondant.  L'éponge se connectera alors automatiquement
-  au point d'accès que vous avez entré.
+  au point d'accès que vous avez entré.  (À partir de ce moment, la
+  page http://192.168.1.1 n'est plus accessible.  Il est donc normal
+  que le navigateur utilisé affiche un message d'erreur.)
 
 * Démarrer l'éponge en mode solo
   Ouvrez le fichier scCode/solo.scd dans SuperCollider et exécuter le bloc de code
