@@ -43,7 +43,7 @@ PR(\abstractProcess).v.clone({
 			// Level 1 starts the voice.
 			// Level 16 (bit 4) changes to "pitch control" mode.
 			// ~butts.modes[0].buttonFunctions[0..4].do{|i,j|
-			~butts.modes[0].buttonFunctions[9..6].do{|i,j|
+			~butts.modes[0].buttonFunctions[9].do{|i,j|
 				i.functions_(
 					Dictionary.newFrom([
 						1, Array.newClear(32).putEach([0,1,2,4],[
