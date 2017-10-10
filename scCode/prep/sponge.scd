@@ -247,15 +247,15 @@ PR(\abstractProcess).v.clone({
 				// 	levels: (0..31),
 				// 	buttState: 1
 				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 7,
-				// 	function: {
-				// 		\octReset.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 0
-				// );
+				~butts.modes[g].addFunc(
+					button: 8,
+					function: {
+						\octReset.post; h.postln;
+						BP( (~defName ++ h).asSymbol ).octReset;
+					},
+					levels: (0..31),
+					buttState: 0
+				);
 				~butts.modes[g].addFunc(
 					button: 7,
 					function: {
@@ -449,15 +449,15 @@ PR(\abstractProcess).v.clone({
 				// 	levels: (0..31),
 				// 	buttState: 1
 				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 7,
-				// 	function: {
-				// 		\octReset.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 0
-				// );
+				~butts.modes[g].addFunc(
+					button: 8,
+					function: {
+						\octReset.post; h.postln;
+						BP( (~defName ++ h).asSymbol ).octReset;
+					},
+					levels: (0..31),
+					buttState: 0
+				);
 				~butts.modes[g].addFunc(
 					button: 7,
 					function: {
