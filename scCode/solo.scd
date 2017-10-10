@@ -48,5 +48,12 @@
 	BP(sym).sponge.hold_(false);
 	s.sync;
 	sym.post; " ready.".postln;
+	"prep/gui.scd".loadRelative;
+	{
+		a = ~quintetGui.value(["solo".ascii]);
+		a.window.front;
+	}.defer;
 }.fork
 )
+
+
