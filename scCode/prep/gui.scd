@@ -1,7 +1,6 @@
 ~quintetGui = { |ips=#[100,98,97,101,99]|
 	var window, spongeViews, octaveViews;
-	var names = ["francis", "ana", "martin", "emilie", "preston"]; // this hardcoded
-	//  array may cause problems eventually.  Sorry.  I had to make this work fast.
+	var names = ips.collect(_.asAscii);
 	var numSponges = ips.size;
 	var oscFuncs;
 
