@@ -81,7 +81,8 @@ s.boot;
 	});
 	"prep/gui.scd".loadRelative;
 	{
-		a = ~quintetGui.value();
+		a = ~quintetGui.value([100,98,97,101,99]);
+		// order is francis, ana, martin, emilie, preston
 		a.window.front;
 	}.defer;
 }.fork
