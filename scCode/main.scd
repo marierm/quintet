@@ -42,14 +42,14 @@ s.boot;
 				[ \en2, \dn3, \gn3, \cn4, \fs4, \bn4].keynum,
 				[ \en2, \cn3, \gn3, \bn3, \fs4, \bn4].keynum,
 				[ \en2, \dn3, \fs3, \bn3, \en4, \an4].keynum,
-				[ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 24,
-				[ \fn7, \bf7, \ef8, \en7, \bf7, \cn8].keynum - 24,
-				[ \en7, \an7, \cs8, \ef7, \af7, \dn8].keynum - 24,
-				[ \gf7, \an7, \cn8, \fn7, \af7, \df8].keynum - 24,
-				[ \gf7, \an7, \cn8, \fn7, \bf7, \dn8].keynum - 24,
-				[ \gf7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 24,
-				[ \gn7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 24,
-				[ \gn7, \an7, \cn8, \fn7, \fn8, \dn8].keynum - 24
+				[ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 48,
+				[ \fn7, \bf7, \ef8, \en7, \bf7, \cn8].keynum - 48,
+				[ \en7, \an7, \cs8, \ef7, \af7, \dn8].keynum - 48,
+				[ \gf7, \an7, \cn8, \fn7, \af7, \df8].keynum - 48,
+				[ \gf7, \an7, \cn8, \fn7, \bf7, \dn8].keynum - 48,
+				[ \gf7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 48,
+				[ \gn7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 48,
+				[ \gn7, \an7, \cn8, \fn7, \fn8, \dn8].keynum - 48
 			],
 			defName: sym
 		));
