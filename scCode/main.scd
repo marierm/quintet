@@ -50,7 +50,8 @@ s.boot;
 				[ \gf7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 24,
 				[ \gn7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 24,
 				[ \gn7, \an7, \cn8, \fn7, \fn8, \dn8].keynum - 24
-			]
+			],
+			defName: sym
 		));
 		s.sync;
 		sym.post; " ready.".postln;
@@ -78,5 +79,11 @@ s.boot;
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
 		BP(sym).sponge.hold_(false);
 	});
+	"prep/gui.scd".loadRelative;
+	{
+		a = ~quintetGui.value();
+		a.window.front;
+	}.defer;
 }.fork
 )
+

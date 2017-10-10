@@ -142,17 +142,21 @@ PR(\withDampFm).clone({ 			// withPitch
 		~notes = ~notes + 12;
 		~pitcher.set(\base, ~notes);
 		~changed.value(\octave, ~notes[0].noteOctave);
+		NetAddr.localAddr.sendMsg("/" ++ ~defName, ~notes[0].noteOctave );
 	});
 	~octVbList = ~octVbList.deepCopy.addFunc({
 		~notes = ~notes - 12;
 		~pitcher.set(\base, ~notes);
 		~changed.value(\octave, ~notes[0].noteOctave);
+		NetAddr.localAddr.sendMsg("/" ++ ~defName, ~notes[0].noteOctave );
 	});
 	~octTmp = { |oct|
 		~pitcher.set(\base, ~notes + (12 * oct));
 	};
 	~octReset = {
+		~notes = ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12);
 		~pitcher.set(\base, ~notes);
+		NetAddr.localAddr.sendMsg("/" ++ ~defName, ~notes[0].noteOctave );
 	};
 	~prepList = ~prepList.deepCopy.addFunc({
 		// Four controls for the pitch are combined:
