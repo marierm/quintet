@@ -1,4 +1,4 @@
-<REAPER_PROJECT 0.1 "5.50rc6/posix64" 1507241185
+<REAPER_PROJECT 0.1 "5.50rc6/posix64" 1507599053
   RIPPLE 0
   GROUPOVERRIDE 0 0 0
   AUTOXFADE 1
@@ -107,6 +107,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {2C7698A8-C6B4-8CE0-CB83-BA4E7A1B68D2}
+      IID 1
+      NAME 01-d_zebra-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {F41AD398-05D1-5300-203A-A3103E0B8F55}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/01-d_zebra-171009_2041.wav"
+      >
+    >
   >
   <TRACK {9E6A335B-CF4B-6B5E-4D6A-981BA5D46133}
     NAME b_ana
@@ -131,6 +154,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {A409B854-DD47-1551-98E0-5C179ACDD960}
+      IID 2
+      NAME 02-b_ana-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {D27AC0E0-7882-8908-E935-54D1C03042E2}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/02-b_ana-171009_2041.wav"
+      >
+    >
   >
   <TRACK {47B9CCF9-C73D-3BCB-D0C7-8B0D95D3766E}
     NAME a_stripes
@@ -156,6 +202,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {D1BF0600-2F78-A264-FED8-7F9A6D5155DF}
+      IID 3
+      NAME 03-a_stripes-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {002002EF-530F-38F3-6E33-3C0281114EEA}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/03-a_stripes-171009_2041.wav"
+      >
+    >
   >
   <TRACK {9B3363FA-A7EB-E93E-26DB-4409F97DAFA0}
     NAME e_flowers
@@ -180,6 +249,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {D6B9506A-FFC6-083C-A12D-3DA80DBD2D78}
+      IID 4
+      NAME 04-e_flowers-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {8AC4CC54-D283-4140-153C-3CB7B93584CA}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/04-e_flowers-171009_2041.wav"
+      >
+    >
   >
   <TRACK {6B9AE2F6-2474-7EC5-12F6-928F1AED5C2C}
     NAME c_brown
@@ -194,7 +286,7 @@
     BUSCOMP 0 0
     SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
     FREEMODE 0
-    SEL 0
+    SEL 1
     REC 1 1028 1 0 0 0 0
     VU 2
     TRACKHEIGHT 0 0
@@ -205,6 +297,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {78FF9AAF-51D1-C366-AF70-3E17084E9D3C}
+      IID 5
+      NAME 05-c_brown-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {32C15654-86BA-C02E-25DB-2C95526B45CD}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/05-c_brown-171009_2041.wav"
+      >
+    >
   >
   <TRACK {9D9C23C2-C474-FE09-5EB4-4885326658F7}
     NAME rvbSnd
@@ -248,7 +363,7 @@
     BUSCOMP 0 0
     SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
     FREEMODE 0
-    SEL 1
+    SEL 0
     REC 1 1036 1 0 0 0 0
     VU 2
     TRACKHEIGHT 0 0
@@ -262,6 +377,29 @@
     PERF 0
     MIDIOUT -1
     MAINSEND 1 0
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 1927.984
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0.01 0 1 0 0
+      FADEOUT 1 0.01 0 1 0 0
+      MUTE 0
+      SEL 1
+      IGUID {8E9B227C-F99D-E046-2FB8-3C6C144662F2}
+      IID 6
+      NAME 07-rvbRtn-171009_2041.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {93D4357E-FA2B-D425-93D7-4E58FE395E6D}
+      RECPASS 1
+      <SOURCE WAVE
+        FILE "media/07-rvbRtn-171009_2041.wav"
+      >
+    >
   >
   <EXTENSIONS
   >
