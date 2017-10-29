@@ -1,5 +1,5 @@
 ~rppFilePath = "";
-"/home/marierm/src/reaper_linux_x86_64/REAPER/reaper5".unixCmd;
+"reaper5".unixCmd;
 "killall jconvolver;".unixCmd;
 "jconvolver -N rvb ~/docs/soundBank/ir/True\\ M7/Halls/amsterdamHall.conf".unixCmd;
 s.boot;
@@ -13,18 +13,16 @@ s.boot;
 	"prep/parentsFm.scd".loadRelative;
 	"prep/fm.scd".loadRelative;
 	s.sync;
+	~sponges = IdentityDictionary.new();
 	(97..101).do({ |i, j|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
-		PR(\sponge).chuck(BP(sym), parms:(
-			ip: "192.168.109." ++ i,
-			defName: sym
-		));
-		BP(sym).play;
+		~sponges.put( sym, ~cSponge.value( "192.168.109." ++ i, sym, Server.default ) );
+		~sponges[sym].prep;
 		s.sync;
-		BP(sym).sponge.hold_(true);
+		~sponges[sym].sponge.hold_(true);
 		PR(\fm).chuck(BP( (sym ++ 0).asSymbol ), parms:(
 			interpolatorPath: ("fm0*").resolveRelative.pathMatch.sort.last.resolveRelative,
-			sponge: BP(sym).sponge,
+			sponge: ~sponges[sym].sponge,
 			outBus: j * 2,
 			notes: ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12),
 			// notes: ([ \bb0, \bb1, \bb2].keynum.mirror2.clump(3)).flat + (i * 12),
@@ -77,7 +75,7 @@ s.boot;
 
 	(97..101).do({ |i|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
-		BP(sym).sponge.hold_(false);
+		~sponges[sym].sponge.hold_(false);
 	});
 	"prep/gui.scd".loadRelative;
 	{

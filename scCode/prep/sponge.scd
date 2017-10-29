@@ -1,27 +1,26 @@
-PR(\abstractProcess).v.clone({
+~cSponge = {
+	arg ip, defName = \sponge01, server;
+	var numBits = 5;
 	// This table is used to invert the bit order of the buttons.  This is
 	// useful when controling pitch with the buttons.
-	~ip = nil;
-	~defName = \sponge01;
-	~numBits = 5;
-	~conversionTable = (0..(2.pow(~numBits) - 1)).collect({|i|
-		i.asInteger.asBinaryDigits(~numBits).reverse.convertDigits(2)
+	var conversionTable = (0..(2.pow(numBits) - 1)).collect({|i|
+		i.asInteger.asBinaryDigits(numBits).reverse.convertDigits(2)
 	});
-	~asPattern = {
-	};
-	~prep = {
-		~ip.isNil.if({
-			~netAddress = nil;
+	var netAddress, sponge, butts;
+	var pitchMode = 1;
+	var harmoMode = 2;
+
+	var prep = {
+		server = server ? Server.default;
+		ip.isNil.if({
+			netAddress = nil;
 		},{
-			~netAddress = NetAddr(~ip, 50502);
+			netAddress = NetAddr(ip, 50502);
 		});
-		
-		// This damper synth conditions the fsr data to make it suitable for
-		// damping the rods.
-		Server.default.waitForBoot({
-			~sponge = SpongeFeather(
+		server.waitForBoot({
+			sponge = SpongeFeather(
 				"/sponge",
-				~netAddress,
+				netAddress,
 				50501,
 				currentEnvironment // To execute the OSCfunc inside this environment.
 			);
@@ -33,472 +32,256 @@ PR(\abstractProcess).v.clone({
 				\acc2xBP, \acc2yBP, \acc2zBP, 
 				\bend
 			].do{|i,j|
-				~sponge.activateFeature(i);
+				sponge.activateFeature(i);
 			};
 			// create button bank
-			~butts = ButtonBank(ButtonInput.sponge(~sponge));
+			butts = ButtonBank(ButtonInput.sponge(sponge));
 			// Buttons 9 to 5 are used to make operations on corresponding voices.
 			// Modifier keys will change their behavior.
 			// Level 0 stops the voice.
 			// Level 1 starts the voice.
 			// Level 16 (bit 4) changes to "pitch control" mode.
 			// ~butts.modes[0].buttonFunctions[0..4].do{|i,j|
-			~butts.modes[0].buttonFunctions[9].do{|i,j|
-				i.functions_(
+			butts.modes[0].buttonFunctions[9].do{|i,j|
+				i.functions_( // Right hand, finger 1.
 					Dictionary.newFrom([
-						1, Array.newClear(32).putEach([0,1,2,4],[
-							{			// 0
+						1, Array.newClear(32).putEach([0,1],[
+							{ // When no modifier key is pressed.
 								\stop.post; j.postln;
-								BP( (~defName ++ j).asSymbol ).stopNow;
+								BP( (defName ++ j).asSymbol ).stopNow;
 							},
-							{ 			// 1
+							{ //  When left hand, key 1 is held.
 								\play.post; j.postln;
-								BP( (~defName ++ j).asSymbol ).play(0,doReset: true);
+								BP( (defName ++ j).asSymbol ).play(0,doReset: true);
 							},
-							// { 			// 2
-							// 	\pbOn.post; j.postln;
-							// 	BP( (~defName ++ j).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-							// },
-							// {			// 4
-							// 	\freeze.post; j.postln;
-							// 	BP( (~defName ++ j).asSymbol ).freezeMe;
-							// }
 						]),
-						0, Array.newClear(32).putEach([2, 8, 16],[
-							nil,
-							// { 			// 2
-							// 	\pbOff.post; j.postln;
-							// 	BP( (~defName ++ j).asSymbol ).pitcher.set(\bend, 0);
-							// },
-							{
+						0, Array.newClear(32).putEach([8, 16],[
+							{ // When left hand, key 4 is held.
 								("mode harmo " + (j + 1)).postln;
-								~butts.mode_(j + 5);
+								butts.mode_(j + 2);
 							},
-							{
+							{ // When left hand, key 5 is held.
 								("mode pitch" + (j + 1)).postln;
-								~butts.mode_(j + 1);
+								butts.mode_(j + 1);
 							},
 						])
 					]);
 				)
 			};
+			// in mode 0, buttons 0 to 4 are modifier keys.
+			butts.modes[0].buttonFunctions[4..0].do{|i,j| i.makeModifier(j)};
 
-			// ~butts.modes[0].addFunc(
-			// 	button:5,
-			// 	function:{
-			// 		\stop.post;	\feu.postln;
-			// 		BP( (~defName ++ \feu ).asSymbol).stopNow;
-			// 	},
-			// 	levels: [0],
-			// 	buttState: 1
-			// );
-			// ~butts.modes[0].addFunc(
-			// 	button:5,
-			// 	function:{
-			// 		\play.post; \feu.postln;
-			// 		BP( (~defName ++ \feu ).asSymbol).play(0,doReset: true);
-			// 	},
-			// 	levels: [1],
-			// 	buttState: 1
-			// );
+			// In mode 1, buttons 0 to 4 sets the pitch.
+			butts.newMode; // pitch mode is created
+			// buttons 0 to 4 are not really modifiers.  They set the level
+			// and then, the level is used to set the pitch.
+			butts.modes[pitchMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 
-			// buttons 0 to 5 are made modifier keys.
-			~butts.modes[0].buttonFunctions[4..0].do{|i,j| i.makeModifier(j)};
-			// In modes 1 to 4, buttons 0 to 4 sets the pitch of the corresponding
-			// voice.  
-			(1..4).do{|g,h|
-				// make new modes
-				~butts.newMode;
-				// buttons 0 to 4 are not really modifiers.  They set the level
-				// and then, the level is used to set the pitch.
-				~butts.modes[g].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
+			// Enable double clicks for button 9.
+			butts.modes[pitchMode].buttonFunctions[9].enableNclick;
 
-				// Enable double clicks for buttons 8..9.
-				(8..9).do({|i|
-					~butts.modes[g].buttonFunctions[i].enableNclick;
+			// for each button(0 to 4), add function to level 0.
+			(0..4).do{|i,j|
+				butts.modes[pitchMode].buttonFunctions[i].functions[1][0] = (
+					butts.modes[pitchMode].buttonFunctions[i].functions[1][0]
+				).addFunc({
+					// This func offsets the pitch of the voice.
+					BP( (defName ++ 0).asSymbol ).pitchOsBus.set(
+						conversionTable[ butts.modes[pitchMode].level ]
+					);
 				});
-				// for each button(0 to 4), add function to level 0.
-				(0..4).do{|i,j|
-					~butts.modes[g].buttonFunctions[i].functions[1][0] = (
-						~butts.modes[g].buttonFunctions[i].functions[1][0]
-					).addFunc({
-						// This func offsets the pitch of the voice.
-						BP( (~defName ++ h).asSymbol ).pitchOsBus.set(
-							~conversionTable[ ~butts.modes[g].level ]
-						);
-					});
-					~butts.modes[g].buttonFunctions[i].functions[0][0] = (
-						~butts.modes[g].buttonFunctions[i].functions[0][0]
-					).addFunc({
-						// do it when button is released too
-						BP( (~defName ++ h).asSymbol ).pitchOsBus.set(
-							~conversionTable[ ~butts.modes[g].level ]
-						);
-					});
-				};
-
-				// ~butts.modes[g].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
-
-				// button 5 switch back to mode 0 (any level works).
-				~butts.modes[g].addFunc(
-					button: 5,
-					function: {
-						~butts.mode_(0);
-						("mode:" + 0).postln; 
-						~butts.mode.level_(0);
-					}.inEnvir,
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// Double click starts looper recording.
-				// Single click stops recording and starts playback.
-				// Triple click stops playback.
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\toggleRecording.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\stopRecording.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopRec;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 2
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\stopPlayback.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 2
-				// );
-				// button 9 starts the voice.
-				// Double click stops it.
-				~butts.modes[g].addFunc(
-					button: 9,
-					function: {
-						\stop.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).stopNow;
-						// \play.post; h.postln;
-						// BP( (~defName ++ h).asSymbol ).play(0,doReset: true);
-					},
-					levels: (0..31),
-					buttState: 2
-				);
-				~butts.modes[g].addFunc(
-					button: 9,
-					function: {
-						\play.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).play(0,doReset: true);
-						// \unfreeze.post; h.postln;
-						// BP( (~defName ++ h).asSymbol ).unfreezeMe;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 6 8vb
-
-				// ~butts.modes[g].addFunc(
-				// 	button: 6,
-				// 	function: {
-				// 		\octVbTmp.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octTmp(-1);
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 6,
-				// 	function: {
-				// 		\octReset.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 0
-				// );
-				~butts.modes[g].addFunc(
-					button: 6,
-					function: {
-						\octVbStuck.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octVb;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 7 = 8va
-
-				// ~butts.modes[g].addFunc(
-				// 	button: 7,
-				// 	function: {
-				// 		\octVaTmp.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octTmp(1);
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\octReset.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octReset;
-					},
-					levels: (0..31),
-					buttState: 0
-				);
-				~butts.modes[g].addFunc(
-					button: 7,
-					function: {
-						\octVaStuck.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octVa;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 6 + 7 = pitch bend
-				// ~butts.modes[g].addCombo(
-				// 	comboBits: 2r0011000000,
-				// 	function: {
-				// 		\pbOn.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 		BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-				// 	},
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addCombo(
-				// 	comboBits: 2r0011000000,
-				// 	function: {
-				// 		\pbOff.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
-				// 	},
-				// 	buttState: 0
-				// );
+				butts.modes[pitchMode].buttonFunctions[i].functions[0][0] = (
+					butts.modes[pitchMode].buttonFunctions[i].functions[0][0]
+				).addFunc({
+					// do it when button is released too
+					BP( (defName ++ 0).asSymbol ).pitchOsBus.set(
+						conversionTable[ butts.modes[pitchMode].level ]
+					);
+				});
 			};
 
-			// In modes 5 to 8, buttons 0 to 4 sets harmony of the
-			// corresponding voice.
-			(5..8).do{|g,h|
-				// make new modes
-				~butts.newMode;
-				// buttons 0 to 4 are not really modifiers.  They set the level
-				// and then, the level is used to set the chord.
-				~butts.modes[g].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 
-				// Enable double clicks for buttons 8..9.
-				(8..9).do({|i|
-					~butts.modes[g].buttonFunctions[i].enableNclick;
+			// button 5 switch back to mode 0 (any level works).
+			butts.modes[pitchMode].addFunc(
+				button: 5,
+				function: {
+					butts.mode_(0);
+					("mode:" + 0).postln; 
+					butts.mode.level_(0);
+				}.inEnvir,
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// button 9 starts the voice.
+			// Double click stops it.
+			butts.modes[pitchMode].addFunc(
+				button: 9,
+				function: {
+					\stop.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).stopNow;
+					// \play.post; h.postln;
+					// BP( (~defName ++ 0).asSymbol ).play(0,doReset: true);
+				},
+				levels: (0..31),
+				buttState: 2
+			);
+			butts.modes[pitchMode].addFunc(
+				button: 9,
+				function: {
+					\play.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).play(0,doReset: true);
+					// \unfreeze.post; h.postln;
+					// BP( (~defName ++ 0).asSymbol ).unfreezeMe;
+				},
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// button 6 (right hand, key 4) = one octave lower
+			butts.modes[pitchMode].addFunc(
+				button: 6,
+				function: {
+					\octVbStuck.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octVb;
+				},
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// button 7 (right hand, key 3) one octave higher
+			butts.modes[pitchMode].addFunc(
+				button: 7,
+				function: {
+					\octVaStuck.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octVa;
+				},
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// button 8 (right hand, key 2) reset octave (to octave 1)
+			butts.modes[pitchMode].addFunc(
+				button: 8,
+				function: {
+					\octReset.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octReset;
+				},
+				levels: (0..31),
+				buttState: 0
+			);
+
+
+
+
+			// Mode 2 is harmoMode 8, buttons 0 to 4 sets notes of chords.
+
+			butts.newMode;
+			// buttons 0 to 4 are not really modifiers.  They set the level
+			// and then, the level is used to set the chord.
+			butts.modes[harmoMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
+
+			butts.modes[harmoMode].buttonFunctions[9].enableNclick;
+			// for each button(0 to 4), add function to level 0.
+			(0..4).do{ |i,j|
+				butts.modes[harmoMode].buttonFunctions[i].functions[1][0] = (
+					butts.modes[harmoMode].buttonFunctions[i].functions[1][0]
+				).addFunc({
+					// This func offsets the pitch of the voice.
+					BP( (defName ++ 0).asSymbol ).setChord(
+						conversionTable[ butts.modes[harmoMode].level ]
+					);
 				});
-				// for each button(0 to 4), add function to level 0.
-				(0..4).do{|i,j|
-					~butts.modes[g].buttonFunctions[i].functions[1][0] = (
-						~butts.modes[g].buttonFunctions[i].functions[1][0]
-					).addFunc({
-						// This func offsets the pitch of the voice.
-						BP( (~defName ++ h).asSymbol ).setChord(
-							~conversionTable[ ~butts.modes[g].level ]
-						);
-					});
-					~butts.modes[g].buttonFunctions[i].functions[0][0] = (
-						~butts.modes[g].buttonFunctions[i].functions[0][0]
-					).addFunc({
-						// do it when button is released too
-						BP( (~defName ++ h).asSymbol ).setChord(
-							~conversionTable[ ~butts.modes[g].level ]
-						);
-					});
-				};
-
-				// ~butts.modes[g].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
-
-				// button 5 switches back to mode 0 (any level works).
-				~butts.modes[g].addFunc(
-					button: 5,
-					function: {
-						~butts.mode_(0);
-						("mode:" + 0).postln; 
-						~butts.mode.level_(0);
-					}.inEnvir,
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 9 starts the voice.
-				// Double click stops it.
-				~butts.modes[g].addFunc(
-					button: 9,
-					function: {
-						\stop.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).stopNow;
-						// \play.post; h.postln;
-						// BP( (~defName ++ h).asSymbol )).play(0,doReset: true);
-					},
-					levels: (0..31),
-					buttState: 2
-				);
-				~butts.modes[g].addFunc(
-					button: 9,
-					function: {
-						\play.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).play(0,doReset: true);
-						// \unfreeze.post; h.postln;
-						// BP( (~defName ++ h).asSymbol ).unfreezeMe;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-				// Double click starts looper recording.
-				// Single click stops recording and starts playback.
-				// Triple click stops playback.
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\toggleRecording.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.toggleRec;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\stopRecording.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopRec;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 2
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		\stopPlayback.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).myLooper.stopPlayback;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 2
-				// );
-
-
-				// Clicking on button 8 holds the current chord even if left
-				// buttons are released.
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		~butts.modes[g].level_(64);
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 8,
-				// 	function: {
-				// 		~butts.modes[g].level_(0)
-				// 	},
-				// 	levels: ([64]),
-				// 	buttState: 0
-				// );
-
-				// button 6 8vb
-
-				// ~butts.modes[g].addFunc(
-				// 	button: 6,
-				// 	function: {
-				// 		\octVbTmp.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octTmp(-1);
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addFunc(
-				// 	button: 6,
-				// 	function: {
-				// 		\octReset.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 0
-				// );
-				~butts.modes[g].addFunc(
-					button: 6,
-					function: {
-						\octVbStuck.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octVb;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 7 = 8va
-
-				// ~butts.modes[g].addFunc(
-				// 	button: 7,
-				// 	function: {
-				// 		\octVaTmp.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octTmp(1);
-				// 	},
-				// 	levels: (0..31),
-				// 	buttState: 1
-				// );
-				~butts.modes[g].addFunc(
-					button: 8,
-					function: {
-						\octReset.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octReset;
-					},
-					levels: (0..31),
-					buttState: 0
-				);
-				~butts.modes[g].addFunc(
-					button: 7,
-					function: {
-						\octVaStuck.post; h.postln;
-						BP( (~defName ++ h).asSymbol ).octVa;
-					},
-					levels: (0..31),
-					buttState: 1
-				);
-
-				// button 6 + 7 = pitch bend
-				// ~butts.modes[g].addCombo(
-				// 	comboBits: 2r0011000000,
-				// 	function: {
-				// 		\pbOn.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).octReset;
-				// 		BP( (~defName ++ h).asSymbol ).pitcher.map(\bend, ~sponge[\bend].bus);
-				// 	},
-				// 	buttState: 1
-				// );
-				// ~butts.modes[g].addCombo(
-				// 	comboBits: 2r0011000000,
-				// 	function: {
-				// 		\pbOff.post; h.postln;
-				// 		BP( (~defName ++ h).asSymbol ).pitcher.set(\bend, 0);
-				// 	},
-				// 	buttState: 0
-				// );
+				butts.modes[harmoMode].buttonFunctions[i].functions[0][0] = (
+					butts.modes[harmoMode].buttonFunctions[i].functions[0][0]
+				).addFunc({
+					// do it when button is released too
+					BP( (defName ++ 0).asSymbol ).setChord(
+						conversionTable[ butts.modes[harmoMode].level ]
+					);
+				});
 			};
 
+
+			// button 5 switches back to mode 0 (any level works).
+			butts.modes[harmoMode].addFunc(
+				button: 5,
+				function: {
+					butts.mode_(0);
+					("mode:" + 0).postln; 
+					butts.mode.level_(0);
+				}.inEnvir,
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// button 9 starts the voice (this is for harmo mode).
+			// Double click stops it (this is for harmo mode).
+			butts.modes[harmoMode].addFunc(
+				button: 9,
+				function: {
+					\stop.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).stopNow;
+				},
+				levels: (0..31),
+				buttState: 2
+			);
+			butts.modes[harmoMode].addFunc(
+				button: 9,
+				function: {
+					\play.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).play(0,doReset: true);
+				},
+				levels: (0..31),
+				buttState: 1
+			);
+
+			// Octave controls for harmo mode.
+			butts.modes[harmoMode].addFunc(
+				button: 6,
+				function: {
+					\octVbStuck.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octVb;
+				},
+				levels: (0..31),
+				buttState: 1
+			);
+			butts.modes[harmoMode].addFunc(
+				button: 8,
+				function: {
+					\octReset.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octReset;
+				},
+				levels: (0..31),
+				buttState: 0
+			);
+			butts.modes[harmoMode].addFunc(
+				button: 7,
+				function: {
+					\octVaStuck.post; h.postln;
+					BP( (defName ++ 0).asSymbol ).octVa;
+				},
+				levels: (0..31),
+				buttState: 1
+			);
 		});
 	};
 
-	~freeCleanup = {
-		{ ~sponge.close; }.try;
-		~damper.free;
-		~damperBus.free;
+	var close = {
+		{ sponge.close; }.try;
 	};
-}).chuck(PR(\sponge));
 
+	(
+		netAddress: { netAddress },
+		sponge: { sponge },
+		prep: { prep.value },
+		butts: { butts },
+		close: { close.value }
+	);
+};
 
+// ~s1 = ~cSponge.value("192.168.109.97", Server.default);
+// ~s1.prep;
+// ~s1.sponge.gui
 
-// BP(\sponge).free
 
