@@ -13,6 +13,7 @@ s.boot;
 	"prep/parentsFm.scd".loadRelative;
 	"prep/fm.scd".loadRelative;
 	s.sync;
+	~transpose = -1;
 	~sponges = IdentityDictionary.new();
 	(97..101).do({ |i, j|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
@@ -24,30 +25,30 @@ s.boot;
 			interpolatorPath: ("fm0*").resolveRelative.pathMatch.sort.last.resolveRelative,
 			sponge: ~sponges[sym].sponge,
 			outBus: j * 2,
-			notes: ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12),
+			notes: ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12) + ~transpose,
 			// notes: ([ \bb0, \bb1, \bb2].keynum.mirror2.clump(3)).flat + (i * 12),
 			numNotes: 6,
 			fmId: 20,
 			fsrMuteThreshold: 0.85, // larger number = muting is easier
 			chords: [
-				[ \en1, \en2, \en3, \en3, \en2, \en1].keynum,
+				[ \en1, \en2, \en3, \en3, \en2, \en1].keynum + ~transpose,
 				// [ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 12,
-				[ \en2, \en3, \gn3, \dn4, \fs4, \bn4].keynum,
-				[ \en2, \dn3, \fs3, \dn4, \fs4, \bn4].keynum,
-				[ \en2, \cn3, \gn3, \dn4, \fs4, \bn4].keynum,
-				[ \en2, \bn2, \an3, \dn4, \fs4, \bn4].keynum,
-				[ \en2, \en3, \cn4, \dn4, \fs4, \bn4].keynum,
-				[ \en2, \dn3, \gn3, \cn4, \fs4, \bn4].keynum,
-				[ \en2, \cn3, \gn3, \bn3, \fs4, \bn4].keynum,
-				[ \en2, \dn3, \fs3, \bn3, \en4, \an4].keynum,
-				[ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 48,
-				[ \fn7, \bf7, \ef8, \en7, \bf7, \cn8].keynum - 48,
-				[ \en7, \an7, \cs8, \ef7, \af7, \dn8].keynum - 48,
-				[ \gf7, \an7, \cn8, \fn7, \af7, \df8].keynum - 48,
-				[ \gf7, \an7, \cn8, \fn7, \bf7, \dn8].keynum - 48,
-				[ \gf7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 48,
-				[ \gn7, \an7, \cn8, \fn7, \bn7, \dn8].keynum - 48,
-				[ \gn7, \an7, \cn8, \fn7, \fn8, \dn8].keynum - 48
+				[ \en2, \en3, \gn3, \dn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \dn3, \fs3, \dn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \cn3, \gn3, \dn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \bn2, \an3, \dn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \en3, \cn4, \dn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \dn3, \gn3, \cn4, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \cn3, \gn3, \bn3, \fs4, \bn4].keynum + ~transpose,
+				[ \en2, \dn3, \fs3, \bn3, \en4, \an4].keynum + ~transpose,
+				[ \fs2, \bn2, \en3, \en2, \bf2, \cn3].keynum + ~transpose,
+				[ \fn2, \bf2, \ef3, \en2, \bf2, \cn3].keynum + ~transpose,
+				[ \en2, \an2, \cs3, \ef2, \af2, \dn3].keynum + ~transpose,
+				[ \gf2, \an2, \cn3, \fn2, \af2, \df3].keynum + ~transpose,
+				[ \gf2, \an2, \cn3, \fn2, \bf2, \dn3].keynum + ~transpose,
+				[ \gf2, \an2, \cn3, \fn2, \bn2, \dn3].keynum + ~transpose,
+				[ \gn2, \an2, \cn3, \fn2, \bn2, \dn3].keynum + ~transpose,
+				[ \gn2, \an2, \cn3, \fn2, \fn3, \dn3].keynum + ~transpose
 			],
 			defName: sym
 		));
