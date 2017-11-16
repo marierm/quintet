@@ -13,7 +13,7 @@ s.boot;
 	"prep/parentsFm.scd".loadRelative;
 	"prep/fm.scd".loadRelative;
 	s.sync;
-	~transpose = -1;
+	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	(97..101).do({ |i, j|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
