@@ -8,10 +8,10 @@ s.boot;
 (
 {
 	s.bootSync;
-	"prep/sponge.scd".loadRelative;
-	"prep/parents.scd".loadRelative;
-	"prep/parentsFm.scd".loadRelative;
-	"prep/fm.scd".loadRelative;
+	"prep/cSponge.scd".loadRelative;
+	// "prep/parents.scd".loadRelative;
+	// "prep/parentsFm.scd".loadRelative;
+	"prep/cFm.scd".loadRelative;
 	s.sync;
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
