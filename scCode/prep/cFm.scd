@@ -2,14 +2,14 @@
 // Needs a path to an interpolator, a sponge, list of notes and list of chords.
 
 ~cFmManager = {
-	arg interpolatorPath, sponge, notes, chords, outBus=0, fsrMuteThreshold=0.85, relTime=0.2, server;
+	arg interpolatorPath, cSponge, notes, chords, outBus=0, fsrMuteThreshold=0.85, relTime=0.2, server;
 	var interpolator, frozen = false, numInterpolatorDim = 6, numAccelAxes = 6;
 	var numFSR = 2, numNotes;
 	var ampBus, globalAmpBus, group, inputs, damper, ampExtractor, globalAmp;
 	var damperCurve = 4, damperMin = 100, damperMax = 900;
 	var damperBus, damperInA, damperInB;
 	var pitcher, pitchOsBus, freqBuses, interpolId;
-	var defName;
+	var sponge, defName;
 	var fm, bus, looperBus, fmId, looperXfade;
 
 	var changed = { |what ... args|
@@ -21,7 +21,8 @@
 		server = server ? Server.default;
 		interpolator = PresetInterpolatorServer.newLoad( interpolatorPath );
 		notes = notes ? ([ \en1, \en2, \bn2].keynum.mirror2.clump(3)).flat;
-		defName = sponge.defName;
+		sponge = cSponge.sponge;
+		defName = cSponge.defName;
 		numNotes = notes.size;
 		chords = chords ? ([
 			notes.deepCopy,
@@ -105,7 +106,7 @@
 			});
 			sig = FM7.ar(ctls, mods);
 			sig = sig * \amps.kr( 0.1!6 );
-			sig = Splay.arFill( ~numNotes, { |i|
+			sig = Splay.arFill( numNotes, { |i|
 				sig[i] * EnvGen.kr(
 					Env.asr(att,0.1),gate, doneAction:2
 				)
@@ -316,6 +317,7 @@
 
 	(
 		interpolatorPath: { interpolatorPath },
+		cSponge: { cSponge },
 		sponge: { sponge },
 		fm: { fm },
 		prep: { prep.value },
