@@ -1,13 +1,12 @@
-~rppFilePath = "../quintetMix/quintetMix.RPP".resolveRelative;
-("reaper5" + ~rppFilePath).unixCmd;
-"killall jconvolver;".unixCmd;
-"jconvolver -N rvb ~/docs/soundBank/ir/True\\ M7/Halls/amsterdamHall.conf".unixCmd;
-s.boot;
-"/home/marierm/scripts/jackDisconnectEverything.py".unixCmd;
-
 (
 {
+	~rppFilePath = "../quintetMix/quintetMix.RPP".resolveRelative;
+	("reaper5" + ~rppFilePath).unixCmd;
+	"killall jconvolver;".unixCmd;
+	0.1.wait;
+	"jconvolver -N rvb ~/docs/soundBank/ir/True\\ M7/Halls/amsterdamHall.conf".unixCmd;
 	s.bootSync;
+	"/home/marierm/scripts/jackDisconnectEverything.py".unixCmd;
 	"prep/cSponge.scd".loadRelative;
 	// "prep/parents.scd".loadRelative;
 	// "prep/parentsFm.scd".loadRelative;
