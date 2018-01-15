@@ -13,12 +13,18 @@ s.boot;
 	// "prep/parentsFm.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
 	s.sync;
+	// ~ipsPrefix = "192.168.109.";
+	~ipsPrefix = "192.168.1.";
+	~ips = (14..18);
+	// ~ips = (97..101);
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~fms = IdentityDictionary.new();
-	(97..101).do({ |i, j|
+	
+
+	~ips.do({ |i, j|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
-		~sponges.put( sym, ~cSponge.value( "192.168.109." ++ i, sym, Server.default ) );
+		~sponges.put( sym, ~cSponge.value( ~ipsPrefix ++ i, sym, Server.default ) );
 		~sponges[sym].prep;
 		s.sync;
 		~sponges[sym].sponge.hold_(true);
@@ -78,14 +84,15 @@ s.boot;
      jack_connect rvb:outL REAPER:in13
      jack_connect rvb:outR REAPER:in14".unixCmd;
 
-	(97..101).do({ |i|
+	~ips.do({ |i|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
 		~sponges[sym].sponge.hold_(false);
 	});
 	"prep/gui.scd".loadRelative;
 	{
-		a = ~quintetGui.value([100,98,97,101,99]);
+		// a = ~quintetGui.value([100,98,97,101,99]);
 		// order is francis, ana, martin, emilie, preston
+		a = ~quintetGui.value(~ips);
 		a.window.front;
 	}.defer;
 }.fork
