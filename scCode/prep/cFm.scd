@@ -320,6 +320,7 @@
 		cSponge: { cSponge },
 		sponge: { sponge },
 		fm: { fm },
+		pitchOsBus: { pitchOsBus },
 		prep: { prep.value },
 		playMe: { playMe.value },
 		freezeMe: { freezeMe.value },
