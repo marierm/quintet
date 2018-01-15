@@ -48,11 +48,11 @@
 						1, Array.newClear(32).putEach([0,1],[
 							{ // When no modifier key is pressed.
 								\stop.post; j.postln;
-								~fms.at( (defName ++ j).asSymbol ).stopMe;
+								~voices.at(defName)[j].stopMe;
 							},
 							{ //  When left hand, key 1 is held.
 								\play.post; j.postln;
-								~fms.at( (defName ++ j).asSymbol ).playMe;
+								~voices.at(defName)[j].playMe;
 							},
 						]),
 						0, Array.newClear(32).putEach([8, 16],[
@@ -86,7 +86,7 @@
 					butts.modes[pitchMode].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
-					~fms.at( (defName ++ 0).asSymbol ).pitchOsBus.set(
+					~voices.at(defName)[0].pitchOsBus.set(
 						conversionTable[ butts.modes[pitchMode].level ]
 					);
 				});
@@ -94,7 +94,7 @@
 					butts.modes[pitchMode].buttonFunctions[i].functions[0][0]
 				).addFunc({
 					// do it when button is released too
-					~fms.at( (defName ++ 0).asSymbol ).pitchOsBus.set(
+					~voices.at(defName)[0].pitchOsBus.set(
 						conversionTable[ butts.modes[pitchMode].level ]
 					);
 				});
@@ -119,9 +119,9 @@
 				button: 9,
 				function: {
 					\stop.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).stopMe;
+					~voices.at(defName)[0].stopMe;
 					// \play.post; h.postln;
-					// ~fms.at( (~defName ++ 0).asSymbol ).playMe(0,doReset: true);
+					// ~voices.at( (~defName ++ 0).asSymbol ).playMe(0,doReset: true);
 				},
 				levels: (0..31),
 				buttState: 2
@@ -130,9 +130,9 @@
 				button: 9,
 				function: {
 					\play.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).playMe;
+					~voices.at(defName)[0].playMe;
 					// \unfreeze.post; h.postln;
-					// ~fms.at( (~defName ++ 0).asSymbol ).unfreezeMe;
+					// ~voices.at( (~defName ++ 0).asSymbol ).unfreezeMe;
 				},
 				levels: (0..31),
 				buttState: 1
@@ -143,7 +143,7 @@
 				button: 6,
 				function: {
 					\octVbStuck.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octVb;
+					~voices.at(defName)[0].octVb;
 				},
 				levels: (0..31),
 				buttState: 1
@@ -154,7 +154,7 @@
 				button: 7,
 				function: {
 					\octVaStuck.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octVa;
+					~voices.at(defName)[0].octVa;
 				},
 				levels: (0..31),
 				buttState: 1
@@ -165,7 +165,7 @@
 				button: 8,
 				function: {
 					\octReset.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octReset;
+					~voices.at(defName)[0].octReset;
 				},
 				levels: (0..31),
 				buttState: 0
@@ -188,7 +188,7 @@
 					butts.modes[harmoMode].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
-					~fms.at( (defName ++ 0).asSymbol ).setChord(
+					~voices.at(defName)[0].setChord(
 						conversionTable[ butts.modes[harmoMode].level ]
 					);
 				});
@@ -196,7 +196,7 @@
 					butts.modes[harmoMode].buttonFunctions[i].functions[0][0]
 				).addFunc({
 					// do it when button is released too
-					~fms.at( (defName ++ 0).asSymbol ).setChord(
+					~voices.at(defName)[0].setChord(
 						conversionTable[ butts.modes[harmoMode].level ]
 					);
 				});
@@ -221,7 +221,7 @@
 				button: 9,
 				function: {
 					\stop.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).stopMe;
+					~voices.at(defName)[0].stopMe;
 				},
 				levels: (0..31),
 				buttState: 2
@@ -230,7 +230,7 @@
 				button: 9,
 				function: {
 					\play.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).playMe;
+					~voices.at(defName)[0].playMe;
 				},
 				levels: (0..31),
 				buttState: 1
@@ -241,7 +241,7 @@
 				button: 6,
 				function: {
 					\octVbStuck.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octVb;
+					~voices.at(defName)[0].octVb;
 				},
 				levels: (0..31),
 				buttState: 1
@@ -250,7 +250,7 @@
 				button: 8,
 				function: {
 					\octReset.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octReset;
+					~voices.at(defName)[0].octReset;
 				},
 				levels: (0..31),
 				buttState: 0
@@ -259,7 +259,7 @@
 				button: 7,
 				function: {
 					\octVaStuck.post; h.postln;
-					~fms.at( (defName ++ 0).asSymbol ).octVa;
+					~voices.at(defName)[0].octVa;
 				},
 				levels: (0..31),
 				buttState: 1

@@ -19,7 +19,7 @@ s.boot;
 	// ~ips = (97..101);
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
-	~fms = IdentityDictionary.new();
+	~voices = IdentityDictionary.new();
 	
 
 	~ips.do({ |i, j|
@@ -29,13 +29,13 @@ s.boot;
 		s.sync;
 		~sponges[sym].sponge.hold_(true);
 		//////////////
-		~fms.put(
-			(sym ++ 0).asSymbol,
+		~voices.put( sym, List[] );
+		~voices[sym].add(
 			~cFmManager.value(
 				interpolatorPath: ("fm0*").resolveRelative.pathMatch.sort.last.resolveRelative,
 				cSponge: ~sponges[sym],
 				notes: ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12) + ~transpose,
-								chords: [
+				chords: [
 					[ \en1, \en2, \en3, \en3, \en2, \en1].keynum + ~transpose,
 					// [ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 12,
 					[ \en2, \en3, \gn3, \dn4, \fs4, \bn4].keynum + ~transpose,
@@ -59,9 +59,10 @@ s.boot;
 				fsrMuteThreshold: 0.85, // larger number = muting is easier
 			)
 		);
+
 		///////////////
 		s.sync;
-		~fms.at( (sym ++ 0).asSymbol ).prep;
+		~voices.at(sym).do({|i| i.prep});
 		s.sync;
 		sym.post; " ready.".postln;
 	});
@@ -96,4 +97,9 @@ s.boot;
 		a.window.front;
 	}.defer;
 }.fork
+)
+
+(
+~voices.do(_.do(_.close));
+~sponges.do(_.close);
 )
