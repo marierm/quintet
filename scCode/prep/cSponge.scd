@@ -75,19 +75,22 @@
 			butts.newMode; // pitch mode is created
 			// buttons 0 to 4 are not really modifiers.  They set the level
 			// and then, the level is used to set the pitch.
+			// butts.modes[pitchMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 			butts.modes[pitchMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 
 			// Enable double clicks for button 9.
+			// butts.modes[pitchMode].buttonFunctions[8].enableNclick;
 			butts.modes[pitchMode].buttonFunctions[9].enableNclick;
 
 			// for each button(0 to 4), add function to level 0.
-			(0..4).do{|i,j|
+			(1..4).do{|i,j|
 				butts.modes[pitchMode].buttonFunctions[i].functions[1][0] = (
 					butts.modes[pitchMode].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
 					~voices.at(defName)[0].pitchOsBus.set(
-						conversionTable[ butts.modes[pitchMode].level ]
+						// & 30 gets rid of LSB (no button 5)
+						conversionTable[ butts.modes[pitchMode].level & 30 ]
 					);
 				});
 				butts.modes[pitchMode].buttonFunctions[i].functions[0][0] = (
@@ -95,7 +98,7 @@
 				).addFunc({
 					// do it when button is released too
 					~voices.at(defName)[0].pitchOsBus.set(
-						conversionTable[ butts.modes[pitchMode].level ]
+						conversionTable[ butts.modes[pitchMode].level & 30 ]
 					);
 				});
 			};
@@ -109,7 +112,7 @@
 					("mode:" + 0).postln; 
 					butts.mode.level_(0);
 				}.inEnvir,
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
@@ -123,7 +126,7 @@
 					// \play.post; h.postln;
 					// ~voices.at( (~defName ++ 0).asSymbol ).playMe(0,doReset: true);
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 2
 			);
 			butts.modes[pitchMode].addFunc(
@@ -134,7 +137,7 @@
 					// \unfreeze.post; h.postln;
 					// ~voices.at( (~defName ++ 0).asSymbol ).unfreezeMe;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
@@ -145,7 +148,7 @@
 					\octVbStuck.post; h.postln;
 					~voices.at(defName)[0].octVb;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
@@ -156,24 +159,40 @@
 					\octVaStuck.post; h.postln;
 					~voices.at(defName)[0].octVa;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
 			// button 8 (right hand, key 2) reset octave (to octave 1)
+			// butts.modes[pitchMode].addFunc(
+			// 	button: 8,
+			// 	function: {
+			// 		\octReset.post; h.postln;
+			// 		~voices.at(defName)[0].octReset;
+			// 	},
+			// 	levels: (0..15),
+			// 	buttState: 0
+			// );
+
+			// button 8 controls looper.
 			butts.modes[pitchMode].addFunc(
 				button: 8,
 				function: {
-					\octReset.post; h.postln;
-					~voices.at(defName)[0].octReset;
+					\toggleRecording.post; h.postln;
+					~voices.at(defName)[0].looper.toggleRec;
 				},
-				levels: (0..31),
-				buttState: 0
+				levels: [0] ++ (2..31),
+				buttState: 1
 			);
-
-
-
-
+			butts.modes[pitchMode].addFunc(
+				button: 8,
+				function: {
+					"Stop loop playback ".post; h.postln;
+					~voices.at(defName)[0].looper.stopPlayback;
+				},
+				levels: [1],
+				buttState: 1
+			);
 			// Mode 2 is harmoMode 8, buttons 0 to 4 sets notes of chords.
 
 			butts.newMode;
@@ -183,13 +202,13 @@
 
 			butts.modes[harmoMode].buttonFunctions[9].enableNclick;
 			// for each button(0 to 4), add function to level 0.
-			(0..4).do{ |i,j|
+			(1..4).do{ |i,j|
 				butts.modes[harmoMode].buttonFunctions[i].functions[1][0] = (
 					butts.modes[harmoMode].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
 					~voices.at(defName)[0].setChord(
-						conversionTable[ butts.modes[harmoMode].level ]
+						conversionTable[ butts.modes[harmoMode].level & 30]
 					);
 				});
 				butts.modes[harmoMode].buttonFunctions[i].functions[0][0] = (
@@ -197,7 +216,7 @@
 				).addFunc({
 					// do it when button is released too
 					~voices.at(defName)[0].setChord(
-						conversionTable[ butts.modes[harmoMode].level ]
+						conversionTable[ butts.modes[harmoMode].level & 30]
 					);
 				});
 			};
@@ -211,7 +230,7 @@
 					("mode:" + 0).postln; 
 					butts.mode.level_(0);
 				}.inEnvir,
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
@@ -223,7 +242,7 @@
 					\stop.post; h.postln;
 					~voices.at(defName)[0].stopMe;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 2
 			);
 			butts.modes[harmoMode].addFunc(
@@ -232,7 +251,7 @@
 					\play.post; h.postln;
 					~voices.at(defName)[0].playMe;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 
@@ -243,25 +262,44 @@
 					\octVbStuck.post; h.postln;
 					~voices.at(defName)[0].octVb;
 				},
-				levels: (0..31),
+				levels: (0..15),
+				buttState: 1
+			);
+			// butts.modes[harmoMode].addFunc(
+			// 	button: 8,
+			// 	function: {
+			// 		\octReset.post; h.postln;
+			// 		~voices.at(defName)[0].octReset;
+			// 	},
+			// 	levels: (0..15),
+			// 	buttState: 0
+			// );
+			butts.modes[harmoMode].addFunc(
+				button: 8,
+				function: {
+					\toggleRecording.post; h.postln;
+					~voices.at(defName)[0].looper.toggleRec;
+				},
+				levels: (0..15),
 				buttState: 1
 			);
 			butts.modes[harmoMode].addFunc(
 				button: 8,
 				function: {
-					\octReset.post; h.postln;
-					~voices.at(defName)[0].octReset;
+					\stopPlayback.post; h.postln;
+					~voices.at(defName)[0].looper.stopPlayback;
 				},
-				levels: (0..31),
-				buttState: 0
+				levels: [1],
+				buttState: 1
 			);
+
 			butts.modes[harmoMode].addFunc(
 				button: 7,
 				function: {
 					\octVaStuck.post; h.postln;
 					~voices.at(defName)[0].octVa;
 				},
-				levels: (0..31),
+				levels: (0..15),
 				buttState: 1
 			);
 		});
