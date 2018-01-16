@@ -1,11 +1,11 @@
 ~cLooper = {
 	arg inBus, id=0, outBus=0, numChan=2, lag=1.0, bufDur=300, server;
 	var isRec, isPlaying, recBuffer, bus;
-	var recLev = 1.0, preLev = 0.0;
+	var recLev = 0.9, preLev = 0.8, releaseTime=6;
 	var oscFunc, recorder, loopPlayer;
-	var loopDur;
+	var loopDur=0.0;
 	var prep = { 
-		forkIfNeeded { 
+		forkIfNeeded {
 			isRec = false;
 			isPlaying = false;
 			server = server ? Server.default;
@@ -43,7 +43,7 @@
 			}).add;
 			server.sync;
 			oscFunc = OSCFunc({ |msg|
-				var msgId;
+				var msgId, newLoopDur;
 				msgId = msg[2];
 				(msgId == id).if({
 					loopDur = msg[3] / server.sampleRate;
@@ -51,12 +51,12 @@
 						\out, outBus,
 						\bufnum, recBuffer,
 						\atk, 1,
-						\rel, 6,
+						\rel, releaseTime,
 						\amp, 1,
 						\gate, 1,
 						\rate, 1.0,
 						\lag, lag,
-						\loopDur, 10;
+						\loopDur, 10
 					]);
 					loopPlayer.set(\loopDur, loopDur);
 					"Set loop dur to ".post; loopDur.postln;
@@ -97,29 +97,42 @@
 	var stopPlayback = {
 		loopPlayer.set(\gate, 0);
 		isPlaying = false;
-		
+		loopDur = 0.0;
+		server.makeBundle(releaseTime,{recBuffer.zero}); // zero the buffer;
 	};
 
 	var toggleRec = {
-		isPlaying.not.if({
-			isRec.if({
-				recorder.set(\t_trig, 1.0);
-				\TstoppingRec.postln;
-				isRec = false;
-			},{
-				recorder = Synth.tail(server, \loopRecorder, [
-					\in, inBus,
-					\buf, recBuffer,
-					\id, id,
-					\recLev, recLev,
-					\preLev, preLev
-				]);
-				isRec = true;
-				\TstartingRec.postln;
-			})
+		var task;
+		// isPlaying.not.if({
+		isRec.if({
+			recorder.set(\t_trig, 1.0);
+			"Stopping loop rec".postln;
+			isRec = false;
+			task.postln;
 		},{
-			"Can't record loop while playing".postln;
-		});
+			recorder = Synth.tail(server, \loopRecorder, [
+				\in, inBus,
+				\buf, recBuffer,
+				\id, id,
+				\recLev, recLev,
+				\preLev, preLev
+			]);
+			isRec = true;
+			\TstartingRec.postln;
+			// if we already recorded a loop, stop recording after
+			// loopDur seconds.
+			(loopDur>0.0).if({
+				task = Task({
+					loopDur.wait;
+					recorder.set(\t_trig, 1.0);
+					"Auto stopping loop rec.".postln;
+					isRec = false;
+				}).start;
+			});
+		})
+		// },{
+		// 	"Can't record loop while playing".postln;
+		// });
 	};
 
 
