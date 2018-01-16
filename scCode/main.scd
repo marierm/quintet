@@ -8,18 +8,16 @@
 	s.bootSync;
 	"/home/marierm/scripts/jackDisconnectEverything.py".unixCmd;
 	"prep/cSponge.scd".loadRelative;
-	// "prep/parents.scd".loadRelative;
-	// "prep/parentsFm.scd".loadRelative;
+	"prep/cLooper.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
 	s.sync;
-	// ~ipsPrefix = "192.168.109.";
-	~ipsPrefix = "192.168.1.";
-	~ips = (14..18);
-	// ~ips = (97..101);
+	// ~ipsPrefix = "192.168.1.";
+	// ~ips = (14..18);
+	~ipsPrefix = "192.168.109.";
+	~ips = (97..101);
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~voices = IdentityDictionary.new();
-	
 
 	~ips.do({ |i, j|
 		var sym = ("sponge_" ++ i.asAscii).asSymbol;
@@ -27,9 +25,8 @@
 		~sponges[sym].prep;
 		s.sync;
 		~sponges[sym].sponge.hold_(true);
-		//////////////
 		~voices.put( sym, List[] );
-		~voices[sym].add(
+		~voices[sym].add( // add fm synth to voice 0 of each sponge.
 			~cFmManager.value(
 				interpolatorPath: ("fm0*").resolveRelative.pathMatch.sort.last.resolveRelative,
 				cSponge: ~sponges[sym],
@@ -56,6 +53,9 @@
 				],
 				outBus: j * 2,
 				fsrMuteThreshold: 0.85, // larger number = muting is easier
+				fmId: j + 20,
+				relTime: 0.2,
+				server: s
 			)
 		);
 
@@ -98,7 +98,3 @@
 }.fork
 )
 
-(
-~voices.do(_.do(_.close));
-~sponges.do(_.close);
-)
