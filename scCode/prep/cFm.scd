@@ -2,7 +2,7 @@
 // Needs a path to an interpolator, a sponge, list of notes and list of chords.
 
 ~cFmManager = {
-	arg interpolatorPath, cSponge, notes, chords, outBus=0, fsrMuteThreshold=0.85, relTime=0.2, server;
+	arg interpolatorPath, cSponge, notes, chords, outBus=0, fsrMuteThreshold=0.85, fmId=20, relTime=0.2, server;
 	var interpolator, frozen = false, numInterpolatorDim = 6, numAccelAxes = 6;
 	var numFSR = 2, numNotes;
 	var ampBus, globalAmpBus, group, inputs, damper, ampExtractor, globalAmp;
@@ -10,7 +10,7 @@
 	var damperBus, damperInA, damperInB;
 	var pitcher, pitchOsBus, freqBuses, interpolId;
 	var sponge, defName;
-	var fm, bus, looperBus, fmId, looperXfade;
+	var fm, bus, looperBus, looperXfade, myLooper;
 
 	var changed = { |what ... args|
 		what.post;
@@ -126,9 +126,17 @@
 		freqBuses = Bus.control(s, notes.size);
 		bus = Bus.audio(server, 2);
 		looperBus = Bus.audio(server, 2);
-		fmId = 20;
 		looperXfade = 1.0;
-		// ~myLooper = ~looper.new(~looperBus, ~fmId, ~outBus, 2, ~looperXfade);
+		myLooper = ~cLooper.value(
+			inBus: looperBus,
+			id: fmId,
+			outBus: outBus,
+			numChan: 2,
+			lag: looperXfade,
+			bufDur: 300,
+			server: server
+		);
+		myLooper.prep;
 
 		// This stores the index of the \interpol control input.
 		// Is there a better way to do this?
@@ -321,6 +329,7 @@
 		sponge: { sponge },
 		fm: { fm },
 		pitchOsBus: { pitchOsBus },
+		looper: { myLooper },
 		prep: { prep.value },
 		playMe: { playMe.value },
 		freezeMe: { freezeMe.value },
