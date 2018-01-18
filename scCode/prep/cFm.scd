@@ -133,7 +133,7 @@
 			outBus: outBus,
 			numChan: 2,
 			lag: looperXfade,
-			bufDur: 300,
+			bufDur: 60,
 			server: server
 		);
 		myLooper.prep;
