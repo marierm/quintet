@@ -1,15 +1,22 @@
 ~cLooper = {
-	arg inBus, id=0, outBus=0, numChan=2, lag=1.0, bufDur=300, server;
-	var isRec, isPlaying, recBuffer, bus;
-	var recLev = 0.9, preLev = 0.8, releaseTime=6;
-	var oscFunc, recorder, loopPlayer;
-	var loopDur=0.0;
+	arg inBus, id=0, outBus=0, numChan=2, lag=1.0, bufDur=60, numLoops=16, server;
+	var isRec, isPlaying, recBuffers, bus;
+	var recLev = 0.9, preLev = 0.9, releaseTime=22;
+	var oscFunc, recorder, loopPlayers;
+	var loopDur, nextLoopId=0, task;
 	var prep = { 
 		forkIfNeeded {
 			isRec = false;
-			isPlaying = false;
+			isPlaying = Array.fill(numLoops, { false });
+			loopPlayers = Array.fill(numLoops, nil);
 			server = server ? Server.default;
-			recBuffer = Buffer.alloc(server, server.sampleRate * bufDur, numChan);
+			recBuffers = numLoops.collect({
+				Buffer.alloc(
+					server, // add 1 second to allow some latency. 
+					server.sampleRate * (bufDur + lag + 1.0),
+					numChan
+				);
+			});
 			SynthDef(\loopPlayer, {
 				arg out=0, bufnum=0, atk=5, rel=6, amp=1, gate=0, rate=1.0, lag=1.0, loopDur=10.0;
 				var sig, env;
@@ -24,7 +31,7 @@
 			}).add;
 			bus = Bus.audio(s, 2);
 			SynthDef(\loopRecorder, {
-				arg in=0, buf=0, id=0, recLev=1.0, preLev=0.0, t_trig=0;
+				arg in=0, buf=0, id=0, recLev=0.9, preLev=0.9, t_trig=0;
 				var phasor;
 				in = In.ar(in, numChan);
 				phasor = Phasor.ar(0, 1, 0, BufFrames.kr(buf));
@@ -43,25 +50,26 @@
 			}).add;
 			server.sync;
 			oscFunc = OSCFunc({ |msg|
-				var msgId, newLoopDur;
+				var msgId;
 				msgId = msg[2];
 				(msgId == id).if({
 					loopDur = msg[3] / server.sampleRate;
-					loopPlayer = Synth.after(recorder, \loopPlayer, [
+					loopPlayers[nextLoopId].release(0.2);
+					loopPlayers[nextLoopId] = Synth.after(recorder, \loopPlayer, [
 						\out, outBus,
-						\bufnum, recBuffer,
+						\bufnum, recBuffers[nextLoopId],
 						\atk, 1,
 						\rel, releaseTime,
 						\amp, 1,
 						\gate, 1,
 						\rate, 1.0,
-						\lag, lag,
-						\loopDur, 10
+						\lag, lag
 					]);
-					loopPlayer.set(\loopDur, loopDur);
-					"Set loop dur to ".post; loopDur.postln;
+					loopPlayers[nextLoopId].set(\loopDur, loopDur);
+					"Set loop dur ".post; nextLoopId.post; " to ".post; loopDur.postln;
 					server.sendBundle(lag, recorder.freeMsg );
-					isPlaying = true;
+					isPlaying[nextLoopId] = true;
+					nextLoopId = (nextLoopId + 1) % numLoops;
 				});
 			}.inEnvir, "/tr", server.addr);
 			server.sync;
@@ -95,40 +103,50 @@
 	// };
 
 	var stopPlayback = {
-		loopPlayer.set(\gate, 0);
-		isPlaying = false;
-		loopDur = 0.0;
-		server.makeBundle(releaseTime,{recBuffer.zero}); // zero the buffer;
+		loopPlayers.do({ |i|
+			i.set(\gate, 0);
+		});
+		isPlaying = Array.fill(numLoops, { false });
+		server.makeBundle(releaseTime, {  
+			recBuffers.do({ |buffer| // zero the buffers;
+				buffer.zero
+			});
+		});
+		nextLoopId = 0;
 	};
 
 	var toggleRec = {
-		var task;
 		// isPlaying.not.if({
 		isRec.if({
 			recorder.set(\t_trig, 1.0);
-			"Stopping loop rec".postln;
+			"Stop rec loop ".post; nextLoopId.postln;
 			isRec = false;
-			task.postln;
+			task.stop;
+			task.reset;
+			// task.postln;
 		},{
 			recorder = Synth.tail(server, \loopRecorder, [
 				\in, inBus,
-				\buf, recBuffer,
+				\buf, recBuffers[nextLoopId],
 				\id, id,
 				\recLev, recLev,
 				\preLev, preLev
 			]);
 			isRec = true;
-			\TstartingRec.postln;
+			"Starting rec on buf ".post; nextLoopId.postln;
 			// if we already recorded a loop, stop recording after
 			// loopDur seconds.
-			(loopDur>0.0).if({
-				task = Task({
-					loopDur.wait;
-					recorder.set(\t_trig, 1.0);
-					"Auto stopping loop rec.".postln;
-					isRec = false;
-				}).start;
-			});
+			// (loopDur>0.0).if({
+			// Do not record for more than bufDur seconds.
+			task.stop; task.reset; // this may not be necessary.
+								   // Doublec check.
+			task = Task({
+				bufDur.wait;
+				recorder.set(\t_trig, 1.0);
+				"Auto stopping loop rec.".postln;
+				isRec = false;
+			}).start;
+			// });
 		})
 		// },{
 		// 	"Can't record loop while playing".postln;
@@ -137,9 +155,9 @@
 
 
 	var freeMe = {
-		recBuffer.free;
+		recBuffers.do(_.free);
 		recorder.free;
-		loopPlayer.free;
+		loopPlayers.do(_.free);
 		oscFunc.free;
 	};
 
@@ -153,7 +171,8 @@
 		server: { server },
 		isRec: { isRec },
 		isPlaying: { isPlaying },
-		recBuffer: { recBuffer },
+		recBuffers: { recBuffers },
+		loopPlayers: { loopPlayers },
 		bus: { bus },
 		loopDur: { loopDur },
 		prep: { prep.value },
