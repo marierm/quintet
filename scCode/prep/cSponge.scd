@@ -9,8 +9,8 @@
 	var netAddress, sponge, butts;
 	var pitchMode = 1;
 	var harmoMode = 2;
-	var pitchModeMelo = 3;
-	var harmoModeMelo = 4;
+	var pitchModeRzn = 3;
+	var harmoModeRzn = 4;
 	var fmVoice = 0;
 	var meloVoice = 1;
 
@@ -320,43 +320,43 @@
 			);
 
 			////////////////////////////////////////////////////
-			///////////// PITCH MODE FOR POPS MELO /////////////
+			///////////// PITCH MODE FOR RZN ///////////////////
 			////////////////////////////////////////////////////
-			// In pitchMode for Melo (3), buttons 0 to 3 set the pitch.
+			// In pitchMode for Rzn (3), buttons 0 to 3 set the pitch.
 			butts.newMode; // pitch mode melo is created
 			// buttons 0 to 3 are not really modifiers.  They set the level
 			// and then, the level is used to set the pitch.
 			// butts.modes[pitchMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
-			butts.modes[pitchModeMelo].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
+			butts.modes[pitchModeRzn].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 
 			// Enable double clicks for button 9.
 			// butts.modes[pitchMode].buttonFunctions[8].enableNclick;
-			butts.modes[pitchModeMelo].buttonFunctions[9].enableNclick;
+			butts.modes[pitchModeRzn].buttonFunctions[9].enableNclick;
 
 			// for each button(0 to 4), add function to level 0.
 			(1..4).do{|i,j|
-				butts.modes[pitchModeMelo].buttonFunctions[i].functions[1][0] = (
-					butts.modes[pitchModeMelo].buttonFunctions[i].functions[1][0]
+				butts.modes[pitchModeRzn].buttonFunctions[i].functions[1][0] = (
+					butts.modes[pitchModeRzn].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
 					~voices.at(defName)[meloVoice].pitchOsBus.set(
 						// & 30 gets rid of LSB (no button 5)
-						conversionTable[ butts.modes[pitchModeMelo].level & 30 ]
+						conversionTable[ butts.modes[pitchModeRzn].level & 30 ]
 					);
 				});
-				butts.modes[pitchModeMelo].buttonFunctions[i].functions[0][0] = (
-					butts.modes[pitchModeMelo].buttonFunctions[i].functions[0][0]
+				butts.modes[pitchModeRzn].buttonFunctions[i].functions[0][0] = (
+					butts.modes[pitchModeRzn].buttonFunctions[i].functions[0][0]
 				).addFunc({
 					// do it when button is released too
 					~voices.at(defName)[meloVoice].pitchOsBus.set(
-						conversionTable[ butts.modes[pitchModeMelo].level & 30 ]
+						conversionTable[ butts.modes[pitchModeRzn].level & 30 ]
 					);
 				});
 			};
 
 
 			// button 5 switch back to mode 0 (any level works).
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 5,
 				function: {
 					butts.mode_(0);
@@ -369,7 +369,7 @@
 
 			// button 9 starts the voice.
 			// Double click stops it.
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 9,
 				function: {
 					"Stop pop melo.".postln;
@@ -380,7 +380,7 @@
 				levels: (0..15),
 				buttState: 2
 			);
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 9,
 				function: {
 					"Play pop melo.".postln;
@@ -393,7 +393,7 @@
 			);
 
 			// button 6 (right hand, key 4) = one octave lower
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 6,
 				function: {
 					\octVbStuck.post; h.postln;
@@ -404,7 +404,7 @@
 			);
 
 			// button 7 (right hand, key 3) one octave higher
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 7,
 				function: {
 					\octVaStuck.post; h.postln;
@@ -415,7 +415,7 @@
 			);
 
 			// button 8 controls looper.
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 8,
 				function: {
 					\toggleRecording.post; h.postln;
@@ -424,7 +424,7 @@
 				levels: [0] ++ (2..31),
 				buttState: 1
 			);
-			butts.modes[pitchModeMelo].addFunc(
+			butts.modes[pitchModeRzn].addFunc(
 				button: 8,
 				function: {
 					"Stop loop playback ".post; h.postln;
@@ -436,37 +436,37 @@
 			// Mode 2 is harmoMode 8, buttons 0 to 4 sets notes of chords.
 
 			/////////////////////////////////////////////
-			///////////// HARMO MODE MELO ///////////////
+			///////////// HARMO MODE RZN ////////////////
 			/////////////////////////////////////////////
 			butts.newMode;
 			// buttons 0 to 4 are not really modifiers.  They set the level
 			// and then, the level is used to set the chord.
-			butts.modes[harmoModeMelo].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
+			butts.modes[harmoModeRzn].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
 
-			butts.modes[harmoModeMelo].buttonFunctions[9].enableNclick;
+			butts.modes[harmoModeRzn].buttonFunctions[9].enableNclick;
 			// for each button(0 to 4), add function to level 0.
 			(1..4).do{ |i,j|
-				butts.modes[harmoModeMelo].buttonFunctions[i].functions[1][0] = (
-					butts.modes[harmoModeMelo].buttonFunctions[i].functions[1][0]
+				butts.modes[harmoModeRzn].buttonFunctions[i].functions[1][0] = (
+					butts.modes[harmoModeRzn].buttonFunctions[i].functions[1][0]
 				).addFunc({
 					// This func offsets the pitch of the voice.
 					~voices.at(defName)[meloVoice].setChord(
-						conversionTable[ butts.modes[harmoModeMelo].level & 30]
+						conversionTable[ butts.modes[harmoModeRzn].level & 30]
 					);
 				});
-				butts.modes[harmoModeMelo].buttonFunctions[i].functions[0][0] = (
-					butts.modes[harmoModeMelo].buttonFunctions[i].functions[0][0]
+				butts.modes[harmoModeRzn].buttonFunctions[i].functions[0][0] = (
+					butts.modes[harmoModeRzn].buttonFunctions[i].functions[0][0]
 				).addFunc({
 					// do it when button is released too
 					~voices.at(defName)[meloVoice].setChord(
-						conversionTable[ butts.modes[harmoModeMelo].level & 30]
+						conversionTable[ butts.modes[harmoModeRzn].level & 30]
 					);
 				});
 			};
 
 
 			// button 5 switches back to mode 0 (any level works).
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 5,
 				function: {
 					butts.mode_(0);
@@ -479,7 +479,7 @@
 
 			// button 9 starts the voice (this is for harmo mode).
 			// Double click stops it (this is for harmo mode).
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 9,
 				function: {
 					\stop.post; h.postln;
@@ -488,7 +488,7 @@
 				levels: (0..15),
 				buttState: 2
 			);
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 9,
 				function: {
 					\play.post; h.postln;
@@ -499,7 +499,7 @@
 			);
 
 			// Octave controls for harmo mode.
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 6,
 				function: {
 					\octVbStuck.post; h.postln;
@@ -508,7 +508,7 @@
 				levels: (0..15),
 				buttState: 1
 			);
-			// butts.modes[harmoModeMelo].addFunc(
+			// butts.modes[harmoModeRzn].addFunc(
 			// 	button: 8,
 			// 	function: {
 			// 		\octReset.post; h.postln;
@@ -517,7 +517,7 @@
 			// 	levels: (0..15),
 			// 	buttState: 0
 			// );
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 8,
 				function: {
 					\toggleRecording.post; h.postln;
@@ -526,7 +526,7 @@
 				levels: (0..15),
 				buttState: 1
 			);
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 8,
 				function: {
 					\stopPlayback.post; h.postln;
@@ -536,7 +536,7 @@
 				buttState: 1
 			);
 
-			butts.modes[harmoModeMelo].addFunc(
+			butts.modes[harmoModeRzn].addFunc(
 				button: 7,
 				function: {
 					\octVaStuck.post; h.postln;

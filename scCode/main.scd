@@ -11,7 +11,7 @@
 	"prep/cSponge.scd".loadRelative;
 	"prep/cLooper.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
-	"prep/cPopper.scd".loadRelative;
+	"prep/cPopperRzn.scd".loadRelative;
 	s.sync;
 	// ~ipsPrefix = "192.168.1.";
 	// ~ips = (14..18);
@@ -64,7 +64,7 @@
 			)
 		);
 		~voices[sym].add( // add melo synth to voice 1 of each sponge.
-			~cPopper.value(
+			~cPopperRzn.value(
 				interpolatorPath: ("popMelo"++1++"*").resolveRelative.pathMatch.sort.last.resolveRelative,
 				cSponge: ~sponges[sym],
 				notes: [ \en1, \en2, \en3, \en3, \en2, \en1].keynum + 24 + ~transpose,
