@@ -28,7 +28,7 @@
 				octaveViews[i].string_(msg[1].asString);
 			}.defer;
 			msg.postln;
-		}, "/sponge_" ++ ip.asAscii);
+		}, "/sponge_" ++ ip);
 	});
 	
 	(
