@@ -10,7 +10,8 @@
 	var damperBus, damperInA, damperInB;
 	var pitcher, pitchOsBus, freqBuses, interpolId;
 	var sponge, defName;
-	var fm, bus, looperBus, looperXfade, myLooper;
+	var looperBus, looperXfade, myLooper;
+	var fm;
 
 	var changed = { |what ... args|
 		what.post;
@@ -122,9 +123,9 @@
 		damperBus = Bus.control(server, numFSR);
 		damperInA = sponge[\fsr1].bus;
 		damperInB = sponge[\fsr2].bus;
-		pitchOsBus = Bus.control(s, 1);
-		freqBuses = Bus.control(s, notes.size);
-		bus = Bus.audio(server, 2);
+		pitchOsBus = Bus.control(server, 1);
+		freqBuses = Bus.control(server, notes.size);
+		
 		looperBus = Bus.audio(server, 2);
 		looperXfade = 1.0;
 		myLooper = ~cLooper.value(
@@ -320,7 +321,6 @@
 		group.free;
 		damperBus.free;
 		pitcher.free;
-		bus.free;
 	};
 
 	(
@@ -330,6 +330,7 @@
 		fm: { fm },
 		pitchOsBus: { pitchOsBus },
 		looper: { myLooper },
+		freqBuses: { freqBuses },
 		prep: { prep.value },
 		playMe: { playMe.value },
 		freezeMe: { freezeMe.value },
