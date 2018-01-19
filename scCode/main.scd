@@ -10,17 +10,21 @@
 	"prep/cSponge.scd".loadRelative;
 	"prep/cLooper.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
+	"prep/cPopper.scd".loadRelative;
 	s.sync;
 	// ~ipsPrefix = "192.168.1.";
 	// ~ips = (14..18);
-	~ipsPrefix = "192.168.109.";
-	~ips = (97..101);
+	// ~ipsPrefix = "192.168.109.";
+	// ~ips = (97..101);
+	~ipsPrefix = "10.42.0.";
+	~ips = [191];
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~voices = IdentityDictionary.new();
 
 	~ips.do({ |i, j|
-		var sym = ("sponge_" ++ i.asAscii).asSymbol;
+		// var sym = ("sponge_" ++ i.asAscii).asSymbol;
+		var sym = ("sponge_" ++ i).asSymbol;
 		~sponges.put( sym, ~cSponge.value( ~ipsPrefix ++ i, sym, Server.default ) );
 		~sponges[sym].prep;
 		s.sync;
@@ -85,7 +89,8 @@
      jack_connect rvb:outR REAPER:in14".unixCmd;
 
 	~ips.do({ |i|
-		var sym = ("sponge_" ++ i.asAscii).asSymbol;
+		// var sym = ("sponge_" ++ i.asAscii).asSymbol;
+		var sym = ("sponge_" ++ i).asSymbol;
 		~sponges[sym].sponge.hold_(false);
 	});
 	"prep/gui.scd".loadRelative;

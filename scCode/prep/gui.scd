@@ -1,6 +1,7 @@
 ~quintetGui = { |ips=#[100,98,97,101,99]|
 	var window, spongeViews, octaveViews;
-	var names = ips.collect(_.asAscii);
+	// var names = ips.collect(_.asAscii);
+	var names = ips;
 	var numSponges = ips.size;
 	var oscFuncs;
 
