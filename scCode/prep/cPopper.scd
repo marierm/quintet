@@ -7,7 +7,7 @@
 	var damperBus, damperInA, damperInB;
 	var sponge, defName;
 	var looperBus, looperXfade, myLooper;
-	var popBuses, trigFeatures, hpFeatures, popsOnly, rzn;
+	var popBuses, trigFeatures, hpFeatures, popsOnly;
 
 
 	var changed = { |what ... args|

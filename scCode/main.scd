@@ -13,6 +13,7 @@
 	"prep/cFm.scd".loadRelative;
 	"prep/cPopperRzn.scd".loadRelative;
 	"prep/cPopper.scd".loadRelative;
+	"prep/cPlayer.scd".loadRelative;
 	s.sync;
 	// ~ipsPrefix = "192.168.1.";
 	// ~ips = (14..18);
@@ -109,6 +110,34 @@
 				server: s
 			)
 		);
+		~voices[sym].add( // add flm playback for each sponge.
+			~cPlayer.value(
+				audioFilePath: "samples/01-flm.wav".resolveRelative,
+				cSponge: ~sponges[sym],
+				outBus: j * 2,
+				tetra: false,
+				amp: 0.dbamp,
+				attackTime: 5,
+				relTime: 1,
+				ampCtl: true,
+				playerId: j + 880,
+				server: s
+			)
+		);
+		~voices[sym].add( // add feu playback for each sponge.
+			~cPlayer.value(
+				audioFilePath: "samples/05-feu.wav".resolveRelative,
+				cSponge: ~sponges[sym],
+				outBus: j * 2,
+				tetra: false,
+				amp: 0.dbamp,
+				attackTime: 15,
+				relTime: 12,
+				ampCtl: false,
+				playerId: j + 1430,
+				server: s
+			)
+		);
 		///////////////
 		s.sync;
 		~voices.at(sym).do({|i| i.prep});
@@ -176,8 +205,7 @@
 [ \gn2, \an2, \cn3, \fn2, \fn3, \dn3]
 (~voices[\sponge_191][1].freqBuses.get)
 
-~voices[\sponge_191][2].playMe;
+~voices[\sponge_191][3].playMe;
 
-~sponges[\sponge_d].butts.mode.dump
+~sponges[\sponge_d].butts.mode.dump;
 
-191.asAscii

@@ -16,6 +16,8 @@
 	var fmVoice = 0;
 	var meloVoice = 1;
 	var popVoice = 2;
+	var flmVoice = 3;
+	var feuVoice = 4;
 
 	var prep = {
 		server = server ? Server.default;
@@ -49,7 +51,7 @@
 			// Level 1 starts the voice.
 			// Level 16 (bit 4) changes to "pitch control" mode.
 			// ~butts.modes[0].buttonFunctions[0..4].do{|i,j|
-			butts.modes[0].buttonFunctions[9..7].do{|i,j|
+			butts.modes[0].buttonFunctions[9..5].do{|i,j|
 				i.functions_( // Right hand, finger 1.
 					Dictionary.newFrom([
 						1, Array.newClear(32).putEach([0,1],[
