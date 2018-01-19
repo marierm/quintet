@@ -11,8 +11,11 @@
 	var harmoMode = 2;
 	var pitchModeRzn = 3;
 	var harmoModeRzn = 4;
+	var pitchModePop = 5;  // Useful only for loop recording.
+	var harmoModePop = 6;
 	var fmVoice = 0;
 	var meloVoice = 1;
+	var popVoice = 2;
 
 	var prep = {
 		server = server ? Server.default;
@@ -46,7 +49,7 @@
 			// Level 1 starts the voice.
 			// Level 16 (bit 4) changes to "pitch control" mode.
 			// ~butts.modes[0].buttonFunctions[0..4].do{|i,j|
-			butts.modes[0].buttonFunctions[9..8].do{|i,j|
+			butts.modes[0].buttonFunctions[9..7].do{|i,j|
 				i.functions_( // Right hand, finger 1.
 					Dictionary.newFrom([
 						1, Array.newClear(32).putEach([0,1],[
@@ -545,7 +548,140 @@
 				levels: (0..15),
 				buttState: 1
 			);
-			
+
+			////////////////////////////////////////////////////
+			///////////// PITCH MODE FOR POP ///////////////////
+			////////////////////////////////////////////////////
+			butts.newMode; // pitch mode pops is created
+			// buttons 0 to 3 are not really modifiers.  They set the level
+			// and then, the level is used to set the pitch.
+			// butts.modes[pitchMode].buttonFunctions[0..4].do{|i,j| i.makeModifier(j)};
+			butts.modes[pitchModePop].buttonFunctions[0].do{|i,j| i.makeModifier(j)};
+
+			// Enable double clicks for button 9.
+			// butts.modes[pitchMode].buttonFunctions[8].enableNclick;
+			butts.modes[pitchModePop].buttonFunctions[9].enableNclick;
+
+
+			// button 5 switch back to mode 0 (any level works).
+			butts.modes[pitchModePop].addFunc(
+				button: 5,
+				function: {
+					butts.mode_(0);
+					("mode:" + 0).postln; 
+					butts.mode.level_(0);
+				}.inEnvir,
+				levels: (0..15),
+				buttState: 1
+			);
+
+			// button 9 starts the voice.
+			// Double click stops it.
+			butts.modes[pitchModePop].addFunc(
+				button: 9,
+				function: {
+					"Stop pops.".postln;
+					~voices.at(defName)[popVoice].stopMe;
+					// \play.post; h.postln;
+					// ~voices.at( (~defName ++ 0).asSymbol ).playMe(0,doReset: true);
+				},
+				levels: (0..15),
+				buttState: 2
+			);
+			butts.modes[pitchModePop].addFunc(
+				button: 9,
+				function: {
+					"Play pops.".postln;
+					~voices.at(defName)[popVoice].playMe;
+					// \unfreeze.post; h.postln;
+					// ~voices.at( (~defName ++ 0).asSymbol ).unfreezeMe;
+				},
+				levels: (0..15),
+				buttState: 1
+			);
+
+			// button 8 controls looper.
+			butts.modes[pitchModePop].addFunc(
+				button: 8,
+				function: {
+					\toggleRecording.post; h.postln;
+					~voices.at(defName)[popVoice].looper.toggleRec;
+				},
+				levels: [0] ++ (2..31),
+				buttState: 1
+			);
+			butts.modes[pitchModePop].addFunc(
+				button: 8,
+				function: {
+					"Stop loop playback of pops.".post;
+					~voices.at(defName)[popVoice].looper.stopPlayback;
+				},
+				levels: [1],
+				buttState: 1
+			);
+			// Mode 2 is harmoMode 8, buttons 0 to 4 sets notes of chords.
+
+			/////////////////////////////////////////////
+			///////////// HARMO MODE POP ////////////////
+			/////////////////////////////////////////////
+			butts.newMode;
+			// buttons 0 to 4 are not really modifiers.  They set the level
+			// and then, the level is used to set the chord.
+			butts.modes[harmoModePop].buttonFunctions[0].do{|i,j| i.makeModifier(j)};
+
+			butts.modes[harmoModePop].buttonFunctions[9].enableNclick;
+
+			// button 5 switches back to mode 0 (any level works).
+			butts.modes[harmoModePop].addFunc(
+				button: 5,
+				function: {
+					butts.mode_(0);
+					("mode:" + 0).postln; 
+					butts.mode.level_(0);
+				}.inEnvir,
+				levels: (0..15),
+				buttState: 1
+			);
+
+			// button 9 starts the voice (this is for harmo mode).
+			// Double click stops it (this is for harmo mode).
+			butts.modes[harmoModePop].addFunc(
+				button: 9,
+				function: {
+					\stop.post; h.postln;
+					~voices.at(defName)[popVoice].stopMe;
+				},
+				levels: (0..15),
+				buttState: 2
+			);
+			butts.modes[harmoModePop].addFunc(
+				button: 9,
+				function: {
+					\play.post; h.postln;
+					~voices.at(defName)[popVoice].playMe;
+				},
+				levels: (0..15),
+				buttState: 1
+			);
+
+			butts.modes[harmoModePop].addFunc(
+				button: 8,
+				function: {
+					\toggleRecording.post; h.postln;
+					~voices.at(defName)[popVoice].looper.toggleRec;
+				},
+				levels: (0..15),
+				buttState: 1
+			);
+			butts.modes[harmoModePop].addFunc(
+				button: 8,
+				function: {
+					\stopPlayback.post; h.postln;
+					~voices.at(defName)[popVoice].looper.stopPlayback;
+				},
+				levels: [1],
+				buttState: 1
+			);
 		});
 	};
 

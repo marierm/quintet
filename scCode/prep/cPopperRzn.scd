@@ -1,5 +1,5 @@
 ~cPopperRzn = {
-	arg interpolatorPath, cSponge, notes, chords, outBus=0, tetra=false, fsrMuteThreshold=0.85, popId=210, relTime=0.2, server;
+	arg interpolatorPath, cSponge, notes, chords, outBus=0, tetra=false, fsrMuteThreshold=0.85, rznId=210, relTime=0.2, server;
 	var interpolator, frozen = false, numInterpolatorDim = 6, numAccelAxes = 6;
 	var numFSR = 2, numNotes;
 	var ampBus, globalAmpBus, group, inputs, damper, ampExtractor, globalAmp;
@@ -96,7 +96,7 @@
 		looperXfade = 1.0;
 		myLooper = ~cLooper.value(
 			inBus: looperBus,
-			id: popId,
+			id: rznId,
 			outBus: outBus,
 			numChan: 2,
 			lag: looperXfade,

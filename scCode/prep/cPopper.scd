@@ -1,14 +1,13 @@
-~cPopperRzn = {
-	arg interpolatorPath, cSponge, notes, chords, outBus=0, tetra=false, fsrMuteThreshold=0.85, popId=210, relTime=0.2, server;
+~cPopper = {
+	arg interpolatorPath, cSponge, notes, outBus=0, tetra=false, fsrMuteThreshold=0.85, popId=210, relTime=0.2, server;
 	var interpolator, frozen = false, numInterpolatorDim = 6, numAccelAxes = 6;
 	var numFSR = 2, numNotes;
 	var ampBus, globalAmpBus, group, inputs, damper, ampExtractor, globalAmp;
 	var damperCurve = 4, damperMin = 100, damperMax = 900;
 	var damperBus, damperInA, damperInB;
-	var pitcher, pitchOsBus, freqBuses, interpolId;
 	var sponge, defName;
 	var looperBus, looperXfade, myLooper;
-	var popBuses, trigFeatures, hpFeatures, manualPops, coefBus, coefBlend, rzn;
+	var popBuses, trigFeatures, hpFeatures, popsOnly, rzn;
 
 
 	var changed = { |what ... args|
@@ -19,23 +18,9 @@
 	var prep = {
 		server = server ? Server.default;
 		interpolator = PresetInterpolatorServer.newLoad( interpolatorPath );
-		notes = notes ? ([ \en1, \en2, \bn2].keynum.mirror2.clump(3)).flat;
 		sponge = cSponge.sponge;
 		defName = cSponge.defName;
-		numNotes = notes.size;
-		chords = chords ? ([
-			notes.deepCopy,
-			[ \en2, \en3, \gn3, \dn4, \fs4, \bn4].keynum,
-			[ \en2, \dn3, \fs3, \dn4, \fs4, \bn4].keynum,
-			[ \en2, \cn3, \gn3, \dn4, \fs4, \bn4].keynum,
-			[ \en2, \bn2, \an3, \dn4, \fs4, \bn4].keynum,
-
-			[ \en2, \en3, \cn4, \dn4, \fs4, \bn4].keynum,
-			[ \en2, \dn3, \gn3, \cn4, \fs4, \bn4].keynum,
-			[ \en2, \cn3, \gn3, \bn3, \fs4, \bn4].keynum,
-			[ \en2, \dn3, \fs3, \bn3, \en4, \an4].keynum
-			// [ \en1, \bn1, \cn3, \dn4, \fs4, \bn4].keynum,
-		]);
+		numNotes = 1;
 		SynthDef(\ampExtractor, {
 			arg out=0, in = #[0,0,0,0,0,0];
 			Out.kr(
@@ -65,23 +50,6 @@
 		//  3. Pitch bend: ~pbBus (in semitones)
 		//  4. Fine pitch variations from interpolator: ~interpolFreqs
 
-		// ~freqBuses hold the resultant.  
-		SynthDef(\pitcher, {
-			arg out = 0, bendRange=2;
-			var base, offset, bend, interpol, freqs;
-			base = NamedControl.kr(\base, notes);
-			offset = NamedControl.kr(\offset, 0);
-			bend = NamedControl.kr(\bend, 0);
-			bend = bend.linlin(-pi, pi, bendRange * -1, bendRange); 
-			interpol = NamedControl.kr(
-				\interpol, [0,0,0,0,0,0]
-			) * NamedControl.kr(
-				\coefImpactHauteur, 1.0 // adjust the impact of interpolator (for experiment);
-			);
-
-			freqs = (base + offset + bend + interpol).midicps;
-			ReplaceOut.kr(out, freqs);
-		}).add;
 
 		ampBus = Bus.control(s, 6);
 		globalAmpBus = Bus.control(s, 1);
@@ -89,8 +57,6 @@
 		damperBus = Bus.control(server, numFSR);
 		damperInA = sponge[\fsr1].bus;
 		damperInB = sponge[\fsr2].bus;
-		pitchOsBus = Bus.control(server, 1);
-		freqBuses = Bus.control(server, notes.size);
 
 		looperBus = Bus.audio(server, 2);
 		looperXfade = 1.0;
@@ -105,15 +71,9 @@
 		);
 		myLooper.prep;
 
-		// This stores the index of the \interpol control input.
-		// Is there a better way to do this?
-		interpolId = SynthDescLib.global[
-			\pitcher
-		].controls.collect(_.name).indexOf(\interpol);
-
 		tetra.if({ // Quad
-			SynthDef(\manualPops, {
-				|out=0, outBus=30, dust=0, amp=1.0, rq=0.35, delRange=0.0017, fltMin=100, fltMax=8000|
+			SynthDef(\popsOnly, {
+				|out=0, outBus=30, dust=0, amp=1.0, rq=0.35, delRange=0.0017, fltMin=100, fltMax=8000, outToLooper|
 				var posFront, posRear, busOffset;
 				posFront = WhiteNoise.kr(1.0);
 				posRear = WhiteNoise.kr(1.0);
@@ -142,36 +102,17 @@
 					earlyreflevel: 0.005,
 					taillevel:0.1
 				);
-				dust = LeakDC.ar(dust);
+				dust = LeakDC.ar(dust) * 20.dbamp;
 				Out.ar( outBus, dust);
 				Out.ar( out, dust );
+				Out.ar( outToLooper, dust );
 			}).add;
-			SynthDef(\rzn, {
-				arg out=0, in=0, coef=0.4, decay=5, freqRec=440, amp=0.2, outToLooper;
-				var sig, freq;
-				freq = freqRec.reciprocal;
-				freq = [freq, freq * 1.001];
-				coef = [coef, coef * 0.99];
-				sig = Pluck.ar(
-					in:In.ar(in, 4),
-					trig:In.ar(in, 4),
-					maxdelaytime:0.5,
-					delaytime:freq,
-					decaytime:decay,
-					coef: coef.clip(-0.999, 0.999),
-					mul: amp
-				);
-				// sig = sig * \amps.kr( 0.1!6 );
-				Out.ar(	out, LeakDC.ar(sig) );
-				Out.ar( outToLooper, sig);
-			}).add;
-
 			popBuses = numNotes.collect({
 				Bus.audio(server, 4);
 			});
 		}, { // Stereo
-			SynthDef(\manualPops, {
-				|out=0, outBus=30, dust=0, amp=1.0, rq=0.35, delRange=0.0017, fltMin=100, fltMax=8000|
+			SynthDef(\popsOnly, {
+				|out=0, outBus=30, dust=0, amp=1.0, rq=0.35, delRange=0.0017, fltMin=100, fltMax=8000, outToLooper|
 				var pos, busOffset;
 				pos = WhiteNoise.kr(1.0);
 				dust = DelayN.ar(
@@ -192,45 +133,16 @@
 					earlyreflevel: 0.005,
 					taillevel:0.1
 				);
-				dust = LeakDC.ar(dust);
+				dust = LeakDC.ar(dust) * 20.dbamp;
 				
 				Out.ar( outBus, dust);
 				Out.ar( out, dust );
-			}).add;
-			SynthDef(\rzn, {
-				arg out=0, in=0, coef=0.4, decay=5, freqRec=440, amp=0.2, outToLooper;
-				var sig, freq;
-				freq = freqRec.reciprocal;
-				freq = [freq, freq * 1.001];
-				coef = [coef, coef * 0.99];
-				sig = Pluck.ar(
-					in:In.ar(in, 2),
-					trig:In.ar(in, 2),
-					maxdelaytime:0.5,
-					delaytime:freq,
-					decaytime:decay,
-					coef: coef.clip(-0.999, 0.999),
-					mul: amp
-				);
-				// sig = sig * \amps.kr( 0.1!6 );
-				Out.ar(	out, LeakDC.ar(sig) );
-				Out.ar( outToLooper, LeakDC.ar(sig));
+				Out.ar( outToLooper, dust );
 			}).add;
 			popBuses = numNotes.collect({
 				Bus.audio(server, 2);
 			});
 		});
-
-		coefBus = Bus.control(server, 2);
-
-		SynthDef(\coefBlend, {
-			arg out=0;
-			Out.kr(
-				out,
-				\inA.kr(0) * \inB.kr([0,0])
-			)
-		}).add;
-
 
 		trigFeatures = [
 			\acc1xTrig, \acc1yTrig, \acc1zTrig, \acc2xTrig, \acc2yTrig, \acc2zTrig
@@ -264,15 +176,6 @@
 			ampExtractor.free;
 			damper.free;
 		});
-		pitcher.isPlaying.if({ pitcher.free; });
-
-		rzn.do({ |item|
-			item.isPlaying.if({
-				item.free;
-			});
-		});
-		coefBlend.isPlaying.if({ coefBlend.free; });
-
 		
 		server.makeBundle(nil, {
 			ampExtractor = Synth.tail(Server.default, \ampExtractor, [
@@ -294,78 +197,21 @@
 				\inA, damperInA,
 				\inB, damperInB
 			);
-			// do not use damper
-			// ampExtractor.map(\decayCoef, damperBus);
-			pitcher = Synth.head(group, \pitcher, [
-				\out, freqBuses.index,
-				\bendRange, 2,
-				\base, notes,
-				\bend, 0
-			]).map(
-				// \bend, ~sponge[\bend].bus,
-				\offset, pitchOsBus
-			);
-			// map freq interpolator to pitcher synth
-			// first 6 parameters in interpolator are pitch.
-			// We use only the first one.
-			pitcher.map( *
-				numNotes.collect({|i|
-					[interpolId + i , interpolator.cursor.parameters[i].bus]
-				}).flat;			
-			);
 			// make 6 manual pops: one for each note.
 			// maybe send only the first one to the actual output.
-			manualPops = numNotes.collect({ |i|
-				Synth.after(pitcher, \manualPops, [
+			popsOnly = numNotes.collect({ |i|
+				Synth.after(damper, \popsOnly, [
 					\out, outBus,
-					\outBus, popBuses[i]
+					\outBus, popBuses[i],
+					\outToLooper, looperBus
 				]).map(
 					\dust, sponge[ trigFeatures[i] ].bus
 				);
 			});
 
-			// One rzn for each note
-			// ~manualPops Synths excite the rzns.
-			rzn = numNotes.collect({|i|
-				Synth.after(manualPops[i], \rzn, [
-					// \out, ~bus.index,
-					\out, outBus,
-					\in, popBuses[i],
-					\outToLooper, looperBus,
-					// \amp, 0.1
-				]);
-
-			});
-
-			// Calculate the coef from fsrs and interpoltor.
-			coefBlend = Synth.before( rzn[0], \coefBlend, [
-				\out, coefBus
-			]);
-			coefBlend.map(
-				\inA, interpolator.cursor.parameters.select({|i|
-					i.name.beginsWith("coef")
-				})[0].bus,
-				\inB, damperBus
-			);
-
-			rzn.do({ |rzn, id|
-				// Map output of pitcher to rzn freq.
-				rzn.map( \freqRec, freqBuses.subBus(id) );
-				// Map dampers (fsr) coef.
-				(id < 3).if({
-					rzn.map(\coef, coefBus.subBus(0));
-				},{
-					rzn.map(\coef, coefBus.subBus(1));
-				});
-				NodeWatcher.register(rzn);
-			});
-
-			
 			NodeWatcher.register(ampExtractor);
 			NodeWatcher.register(globalAmp);
 			NodeWatcher.register(damper);
-			NodeWatcher.register(pitcher);
-			NodeWatcher.register(coefBlend);
 			
 		});
 	};
@@ -383,36 +229,6 @@
 			frozen = false;
 		});
 	};
-	////////////////////////
-	var octVa = {
-		notes = notes + 12;
-		chords = chords + 12;
-		pitcher.set(\base, notes);
-		changed.value(\octave, notes[0].noteOctave);
-		NetAddr.localAddr.sendMsg("/" ++ defName, notes[0].noteOctave );
-	};
-	var octVb = {
-		notes = notes - 12;
-		chords = chords - 12;
-		pitcher.set(\base, notes);
-		changed.value(\octave, notes[0].noteOctave);
-		NetAddr.localAddr.sendMsg("/" ++ defName, notes[0].noteOctave );
-	};
-	var octTmp = { |oct|
-		pitcher.set(\base, notes + (12 * oct));
-	};
-	var octReset = {
-		notes = ([ \en1, \en2, \en3].keynum.mirror2.clump(3)).flat + (0 * 12);
-		pitcher.set(\base, notes);
-		NetAddr.localAddr.sendMsg("/" ++ defName, notes[0].noteOctave );
-	};
-	var setChord = { |id|
-		notes = chords.clipAt(id);
-		pitcher.set(\base, notes);
-		changed.value(\chord, notes.note);
-	};
-	////////////////////////////////////////////////
-
 
 	var stopMe = {
 		numInterpolatorDim.do({ |i|
@@ -430,28 +246,12 @@
 			// wait for ~relTime seconds before freeing
 			server.sendBundle(relTime, damper.freeMsg );
 		});
-		pitcher.isPlaying.if({
-			// wait for ~relTime seconds before freeing
-			server.sendBundle(relTime, pitcher.freeMsg );
-		});
 
 		{
-			manualPops.do({|i|
+			popsOnly.do({|i|
 				i.free;
 			});
 		}.try;
-
-		forkIfNeeded {
-			// 5.wait;
-			rzn.do({ |rzn|
-				rzn.isPlaying.if({
-					rzn.free;
-				});
-			});
-			coefBlend.isPlaying.if({
-				coefBlend.free;
-			});
-		}
 	};
 
 	var close = {
@@ -462,11 +262,9 @@
 		globalAmpBus.free;
 		group.free;
 		damperBus.free;
-		pitcher.free;
 		popBuses.do({|i|
 			i.free;
 		});
-		coefBus.free
 	};
 
 	(
@@ -474,21 +272,12 @@
 		cSponge: { cSponge },
 		sponge: { sponge },
 		popBuses: { popBuses },
-		coefBus: { coefBus },
-		manualPops: { manualPops },
-		rzn: { rzn },
-		pitchOsBus: { pitchOsBus },
+		popsOnly: { popsOnly },
 		looper: { myLooper },
-		pitcher: { pitcher },
-		freqBuses: { freqBuses },
 		prep: { prep.value },
 		playMe: { playMe.value },
 		freezeMe: { freezeMe.value },
 		unfreezeMe: { unfreezeMe.value },
-		octVa: { octVa.value },
-		octVb: { octVb.value },
-		octReset: { octReset.value },
-		setChord: { |self, id| setChord.value(id); },
 		stopMe: { stopMe.value },
 		close: { close.value }
 	);

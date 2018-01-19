@@ -12,6 +12,7 @@
 	"prep/cLooper.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
 	"prep/cPopperRzn.scd".loadRelative;
+	"prep/cPopper.scd".loadRelative;
 	s.sync;
 	// ~ipsPrefix = "192.168.1.";
 	// ~ips = (14..18);
@@ -91,10 +92,23 @@
 				outBus: (j*4) + 10,
 				tetra: false,
 				fsrMuteThreshold: nil,
-				popId: j + 210,
+				rznId: j + 210,
 				relTime: 10.0,
 				server: s
-		));
+			)
+		);
+		~voices[sym].add( // add melo synth to voice 1 of each sponge.
+			~cPopper.value(
+				interpolatorPath: ("popMelo"++1++"*").resolveRelative.pathMatch.sort.last.resolveRelative,
+				cSponge: ~sponges[sym],
+				notes: [ \en1 ],
+				outBus: (j*4) + 10,
+				tetra: false,
+				fsrMuteThreshold: nil,
+				popId: j + 550,
+				server: s
+			)
+		);
 		///////////////
 		s.sync;
 		~voices.at(sym).do({|i| i.prep});
@@ -162,7 +176,7 @@
 [ \gn2, \an2, \cn3, \fn2, \fn3, \dn3]
 (~voices[\sponge_191][1].freqBuses.get)
 
-(~voices[\sponge_191][0].freqBuses.get)
+~voices[\sponge_191][2].playMe;
 
 ~sponges[\sponge_d].butts.mode.dump
 
