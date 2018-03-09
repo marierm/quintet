@@ -1,5 +1,5 @@
 ~cPopper = {
-	arg interpolatorPath, cSponge, notes, outBus=0, tetra=false, fsrMuteThreshold=0.85, popId=210, relTime=0.2, server;
+	arg interpolatorPath, cSponge, notes, outBus=0, tetra=false, amp=1.0, fsrMuteThreshold=0.85, popId=210, relTime=0.2, server;
 	var interpolator, frozen = false, numInterpolatorDim = 6, numAccelAxes = 6;
 	var numFSR = 2, numNotes;
 	var ampBus, globalAmpBus, group, inputs, damper, ampExtractor, globalAmp;
@@ -102,7 +102,7 @@
 					earlyreflevel: 0.005,
 					taillevel:0.1
 				);
-				dust = LeakDC.ar(dust) * 20.dbamp;
+				dust = LeakDC.ar(dust);
 				Out.ar( outBus, dust);
 				Out.ar( out, dust );
 				Out.ar( outToLooper, dust );
@@ -133,7 +133,7 @@
 					earlyreflevel: 0.005,
 					taillevel:0.1
 				);
-				dust = LeakDC.ar(dust) * 20.dbamp;
+				dust = LeakDC.ar(dust);
 				
 				Out.ar( outBus, dust);
 				Out.ar( out, dust );
@@ -203,7 +203,8 @@
 				Synth.after(damper, \popsOnly, [
 					\out, outBus,
 					\outBus, popBuses[i],
-					\outToLooper, looperBus
+					\outToLooper, looperBus,
+					\amp, amp
 				]).map(
 					\dust, sponge[ trigFeatures[i] ].bus
 				);
