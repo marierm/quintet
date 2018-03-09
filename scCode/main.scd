@@ -1,7 +1,16 @@
 // Stop playback in harmo modes: does it work?
+// Make option to stop loops in the order they appeared.
+// Find a way to make inheritance.
+
+// Pops did not stop with sponge zebra.
 (
 {
+	~scJackName="SuperCollider:out_"; //for Jack connections
+	// ~scJackName="supernova:output_"; //for Jack connections
+	~reaperInJackName="REAPER:in";
+
 	~rppFilePath = "../quintetMix/quintetMix.RPP".resolveRelative;
+	// ~cond = Condition.new;
 	("reaper5" + ~rppFilePath).unixCmd;
 	"killall jconvolver;".unixCmd;
 	0.1.wait;
@@ -15,22 +24,28 @@
 	"prep/cPopper.scd".loadRelative;
 	"prep/cPlayer.scd".loadRelative;
 	s.sync;
-	// ~ipsPrefix = "192.168.1.";
+	1.wait;
+	// ~ipsPrefix = "192.168.109.";
 	// ~ips = (14..18);
 	// ~ipsPrefix = "192.168.109.";
-	// ~ips = (97..101);
+	// ~ips = [191];
+	// ~ips = (97..98);
 	~ipsPrefix = "10.42.0.";
-	~ips = [191];
+	~ips = [140];
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~voices = IdentityDictionary.new();
 
+	// x = ~cSponge.value( ~ipsPrefix ++ 97, \sponge, Server.default );
+	// x.prep;
+	// x.sponge.hold_(true);
 	~ips.do({ |i, j|
 		// var sym = ("sponge_" ++ i.asAscii).asSymbol;
 		var sym = ("sponge_" ++ i).asSymbol;
 		~sponges.put( sym, ~cSponge.value( ~ipsPrefix ++ i, sym, Server.default ) );
 		~sponges[sym].prep;
 		s.sync;
+		1.wait;
 		~sponges[sym].sponge.hold_(true);
 		~voices.put( sym, List[] );
 		~voices[sym].add( // add fm synth to voice 0 of each sponge.
@@ -105,6 +120,7 @@
 				notes: [ \en1 ],
 				outBus: (j*4) + 10,
 				tetra: false,
+				amp: 4.dbamp,
 				fsrMuteThreshold: nil,
 				popId: j + 550,
 				server: s
@@ -114,7 +130,7 @@
 			~cPlayer.value(
 				audioFilePath: "samples/01-flm.wav".resolveRelative,
 				cSponge: ~sponges[sym],
-				outBus: j * 2,
+				outBus: (j*4) + 10,
 				tetra: false,
 				amp: 0.dbamp,
 				attackTime: 5,
@@ -128,7 +144,7 @@
 			~cPlayer.value(
 				audioFilePath: "samples/05-feu.wav".resolveRelative,
 				cSponge: ~sponges[sym],
-				outBus: j * 2,
+				outBus: (j*4) + 10,
 				tetra: false,
 				amp: 0.dbamp,
 				attackTime: 15,
@@ -140,46 +156,24 @@
 		);
 		///////////////
 		s.sync;
+		1.wait;
 		~voices.at(sym).do({|i| i.prep});
 		s.sync;
+		1.wait;
 		sym.post; " ready.".postln;
 	});
 	s.sync;
-	
-	"jack_connect SuperCollider:out_1  REAPER:in1
-	 jack_connect SuperCollider:out_2   REAPER:in2
-	 jack_connect SuperCollider:out_3   REAPER:in3
-	 jack_connect SuperCollider:out_4   REAPER:in4
-	 jack_connect SuperCollider:out_5   REAPER:in5
-	 jack_connect SuperCollider:out_6   REAPER:in6
-	 jack_connect SuperCollider:out_7   REAPER:in7
-	 jack_connect SuperCollider:out_8   REAPER:in8
-	 jack_connect SuperCollider:out_9   REAPER:in9
-	 jack_connect SuperCollider:out_10  REAPER:in10
-     jack_connect SuperCollider:out_11  REAPER:in11
-     jack_connect SuperCollider:out_12  REAPER:in12
-     jack_connect SuperCollider:out_13  REAPER:in13
-     jack_connect SuperCollider:out_14  REAPER:in14
-     jack_connect SuperCollider:out_15  REAPER:in15
-     jack_connect SuperCollider:out_16  REAPER:in16
-     jack_connect SuperCollider:out_17  REAPER:in17
-     jack_connect SuperCollider:out_18  REAPER:in18
-     jack_connect SuperCollider:out_19  REAPER:in19
-     jack_connect SuperCollider:out_20  REAPER:in20
-     jack_connect SuperCollider:out_21  REAPER:in21
-     jack_connect SuperCollider:out_22  REAPER:in22
-     jack_connect SuperCollider:out_23  REAPER:in23
-     jack_connect SuperCollider:out_24  REAPER:in24
-     jack_connect SuperCollider:out_25  REAPER:in25
-     jack_connect SuperCollider:out_26  REAPER:in26
-     jack_connect SuperCollider:out_27  REAPER:in27
-     jack_connect SuperCollider:out_28  REAPER:in28
-     jack_connect SuperCollider:out_29  REAPER:in29
-     jack_connect SuperCollider:out_30  REAPER:in30
 
-	 jack_connect REAPER:out1 system:playback_1
+	// Make Jack connections.
+	(~ips.size * 6).do({ |i|
+		var string;
+		string = "jack_connect" + ~scJackName ++ (i+1) + ~reaperInJackName ++ (i+1);
+		string.unixCmd;
+	});
+
+	"jack_connect REAPER:out1 system:playback_1
      jack_connect REAPER:out2 system:playback_2".unixCmd;
-
+	
 	"jack_connect REAPER:out7 rvb:inL
      jack_connect REAPER:out8 rvb:inR
      jack_connect rvb:outL REAPER:in31
@@ -200,7 +194,10 @@
 }.fork
 )
 
-~voices[\sponge_191][1].looper.recBuffers[0].play
+~voices[\sponge_111][0]
+
+
+[1].looper.recBuffers[0].play
 (~voices[\sponge_191][1].pitcher.set(\base,[ \c2, \cs2, \d2, \ds2, \en2, \fn2].keynum.midicps))
 [ \gn2, \an2, \cn3, \fn2, \fn3, \dn3]
 (~voices[\sponge_191][1].freqBuses.get)
@@ -208,4 +205,12 @@
 ~voices[\sponge_191][3].playMe;
 
 ~sponges[\sponge_d].butts.mode.dump;
+
+~sponges[\sponge_97].sponge.hold_(true)
+
+.butts.mode.dump;
+
+
+s.sync
+
 
