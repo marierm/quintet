@@ -325,6 +325,7 @@
 
 	(
 		interpolatorPath: { interpolatorPath },
+		interpolator: { interpolator },
 		cSponge: { cSponge },
 		sponge: { sponge },
 		fm: { fm },
