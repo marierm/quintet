@@ -63,7 +63,8 @@
 			Out.kr(
 				out,
 				\inA.kr(0).max(\inB.kr(0)).lincurve(
-					min,max,0.99999,0.7, curve
+					// min,max,0.99999,0.7, curve
+					min,max,0.996,0.7, curve
 				);
 			)
 		}).add;
@@ -134,7 +135,8 @@
 			outBus: outBus,
 			numChan: 2,
 			lag: looperXfade,
-			bufDur: 60,
+			bufDur: 2, // This is small for children version.
+			numLoops: 1, // This too.
 			server: server
 		);
 		myLooper.prep;

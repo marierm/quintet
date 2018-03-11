@@ -1,15 +1,11 @@
-// Stop playback in harmo modes: does it work?
-// Make option to stop loops in the order they appeared.
-// Find a way to make inheritance.
-
-// Pops did not stop with sponge zebra.
+// This is version for children/installations.
 (
 {
 	~scJackName="SuperCollider:out_"; //for Jack connections
 	// ~scJackName="supernova:output_"; //for Jack connections
 	~reaperInJackName="REAPER:in";
 
-	~rppFilePath = "../quintetMix/quintetMix.RPP".resolveRelative;
+	~rppFilePath = "../quintetMix/quintetChildren.RPP".resolveRelative;
 	// ~cond = Condition.new;
 	("reaper5" + ~rppFilePath).unixCmd;
 	"killall jconvolver;".unixCmd;
@@ -20,18 +16,32 @@
 	"prep/cSponge.scd".loadRelative;
 	"prep/cLooper.scd".loadRelative;
 	"prep/cFm.scd".loadRelative;
-	"prep/cPopperRzn.scd".loadRelative;
-	"prep/cPopper.scd".loadRelative;
-	"prep/cPlayer.scd".loadRelative;
+	// "prep/cPopperRzn.scd".loadRelative;
+	// "prep/cPopper.scd".loadRelative;
+	// "prep/cPlayer.scd".loadRelative;
 	s.sync;
 	1.wait;
+
+	// With linksys EA7500 router.
 	// ~ipsPrefix = "192.168.109.";
-	// ~ips = (14..18);
-	// ~ipsPrefix = "192.168.109.";
-	// ~ips = [191];
-	// ~ips = (97..98);
+	// ~ips = [
+	// 	98, // ana
+	// 	99,  // brown
+	// 	101, // flowers
+	// 	71, // mcgill
+	// 	97, // stripes
+	// 	100, // zebra
+	// ];
+	// hotspot from computer.
 	~ipsPrefix = "10.42.0.";
-	~ips = [140];
+	~ips = [
+		123, // ana
+		190,  // brown
+		141, // flowers
+		138, // mcgill
+		140, // stripes
+		191, // zebra
+	];
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~voices = IdentityDictionary.new();
@@ -74,83 +84,9 @@
 					[ \gn2, \an2, \cn3, \fn2, \fn3, \dn3].keynum + ~transpose
 				],
 				outBus: j * 2,
-				fsrMuteThreshold: 0.85, // larger number = muting is easier
+				fsrMuteThreshold: 0.9, // larger number = muting is easier
 				fmId: j + 20,
 				relTime: 0.2,
-				server: s
-			)
-		);
-		~voices[sym].add( // add melo synth to voice 1 of each sponge.
-			~cPopperRzn.value(
-				interpolatorPath: ("popMelo"++1++"*").resolveRelative.pathMatch.sort.last.resolveRelative,
-				cSponge: ~sponges[sym],
-				notes: [ \en1, \en2, \en3, \en3, \en2, \en1].keynum + 24 + ~transpose,
-				chords: [
-					[ \en1, \en2, \en3, \en3, \en2, \en1].keynum + ~transpose,
-					// [ \fs7, \bn7, \en8, \en7, \bf7, \cn8].keynum - 12,
-					[ \en2, \en3, \gn3, \dn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \dn3, \fs3, \dn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \cn3, \gn3, \dn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \bn2, \an3, \dn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \en3, \cn4, \dn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \dn3, \gn3, \cn4, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \cn3, \gn3, \bn3, \fs4, \bn4].keynum + ~transpose,
-					[ \en2, \dn3, \fs3, \bn3, \en4, \an4].keynum + ~transpose,
-					[ \fs2, \bn2, \en3, \en2, \bf2, \cn3].keynum + ~transpose,
-					[ \fn2, \bf2, \ef3, \en2, \bf2, \cn3].keynum + ~transpose,
-					[ \en2, \an2, \cs3, \ef2, \af2, \dn3].keynum + ~transpose,
-					[ \gf2, \an2, \cn3, \fn2, \af2, \df3].keynum + ~transpose,
-					[ \gf2, \an2, \cn3, \fn2, \bf2, \dn3].keynum + ~transpose,
-					[ \gf2, \an2, \cn3, \fn2, \bn2, \dn3].keynum + ~transpose,
-					[ \gn2, \an2, \cn3, \fn2, \bn2, \dn3].keynum + ~transpose,
-					[ \gn2, \an2, \cn3, \fn2, \fn3, \dn3].keynum + ~transpose
-				],
-				outBus: (j*4) + 10,
-				tetra: false,
-				fsrMuteThreshold: nil,
-				rznId: j + 210,
-				relTime: 10.0,
-				server: s
-			)
-		);
-		~voices[sym].add( // add melo synth to voice 1 of each sponge.
-			~cPopper.value(
-				interpolatorPath: ("popMelo"++1++"*").resolveRelative.pathMatch.sort.last.resolveRelative,
-				cSponge: ~sponges[sym],
-				notes: [ \en1 ],
-				outBus: (j*4) + 10,
-				tetra: false,
-				amp: 4.dbamp,
-				fsrMuteThreshold: nil,
-				popId: j + 550,
-				server: s
-			)
-		);
-		~voices[sym].add( // add flm playback for each sponge.
-			~cPlayer.value(
-				audioFilePath: "samples/01-flm.wav".resolveRelative,
-				cSponge: ~sponges[sym],
-				outBus: (j*4) + 10,
-				tetra: false,
-				amp: 0.dbamp,
-				attackTime: 5,
-				relTime: 1,
-				ampCtl: true,
-				playerId: j + 880,
-				server: s
-			)
-		);
-		~voices[sym].add( // add feu playback for each sponge.
-			~cPlayer.value(
-				audioFilePath: "samples/05-feu.wav".resolveRelative,
-				cSponge: ~sponges[sym],
-				outBus: (j*4) + 10,
-				tetra: false,
-				amp: 0.dbamp,
-				attackTime: 15,
-				relTime: 12,
-				ampCtl: false,
-				playerId: j + 1430,
 				server: s
 			)
 		);
@@ -165,7 +101,8 @@
 	s.sync;
 
 	// Make Jack connections.
-	(~ips.size * 6).do({ |i|
+	
+	30.do({ |i|
 		var string;
 		string = "jack_connect" + ~scJackName ++ (i+1) + ~reaperInJackName ++ (i+1);
 		string.unixCmd;
@@ -180,7 +117,6 @@
      jack_connect rvb:outR REAPER:in32".unixCmd;
 
 	~ips.do({ |i|
-		// var sym = ("sponge_" ++ i.asAscii).asSymbol;
 		var sym = ("sponge_" ++ i).asSymbol;
 		~sponges[sym].sponge.hold_(false);
 	});
@@ -194,23 +130,27 @@
 }.fork
 )
 
-~voices[\sponge_111][0]
+// ~voices[\sponge_111][0]
 
 
-[1].looper.recBuffers[0].play
-(~voices[\sponge_191][1].pitcher.set(\base,[ \c2, \cs2, \d2, \ds2, \en2, \fn2].keynum.midicps))
-[ \gn2, \an2, \cn3, \fn2, \fn3, \dn3]
-(~voices[\sponge_191][1].freqBuses.get)
+// [1].looper.recBuffers[0].play
+// (~voices[\sponge_191][1].pitcher.set(\base,[ \c2, \cs2, \d2, \ds2, \en2, \fn2].keynum.midicps))
+// [ \gn2, \an2, \cn3, \fn2, \fn3, \dn3]
+// (~voices[\sponge_191][1].freqBuses.get)
 
-~voices[\sponge_191][3].playMe;
+// ~voices[\sponge_191][3].playMe;
 
-~sponges[\sponge_d].butts.mode.dump;
+// ~sponges[\sponge_d].butts.mode.dump;
 
-~sponges[\sponge_97].sponge.hold_(true)
+// ~sponges[\sponge_97].sponge.hold_(true)
 
-.butts.mode.dump;
-
-
-s.sync
+// .butts.mode.dump;
 
 
+// s.sync
+
+
+// ~sponges[\sponge_100].sponge.features.last.dump.bus
+
+OSCFunc.trace();
+OSCFunc.trace(false);
