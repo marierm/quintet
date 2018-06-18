@@ -63,8 +63,8 @@
 			Out.kr(
 				out,
 				\inA.kr(0).max(\inB.kr(0)).lincurve(
-					// min,max,0.99999,0.7, curve
-					min,max,0.996,0.7, curve
+					min,max,0.99999,0.7, curve
+					// min,max,0.996,0.7, curve
 				);
 			)
 		}).add;

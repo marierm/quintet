@@ -33,15 +33,19 @@
 	// 	100, // zebra
 	// ];
 	// hotspot from computer.
-	~ipsPrefix = "10.42.0.";
-	~ips = [
-		123, // ana
-		190,  // brown
-		141, // flowers
-		138, // mcgill
-		140, // stripes
-		191, // zebra
-	];
+	// ~ipsPrefix = "10.42.0.";
+	// ~ips = [
+	// 	123, // ana
+	// 	190,  // brown
+	// 	141, // flowers
+	// 	138, // mcgill
+	// 	140, // stripes
+	// 	191, // zebra
+	// ];
+	// With sudafed
+	~ipsPrefix = "192.168.0."; // for sudafed
+	~ips = [195,126,104,174];
+	// ~spongeNames = ["stripes", "flowers", "ana", "zebra"];
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
 	~voices = IdentityDictionary.new();
@@ -84,7 +88,7 @@
 					[ \gn2, \an2, \cn3, \fn2, \fn3, \dn3].keynum + ~transpose
 				],
 				outBus: j * 2,
-				fsrMuteThreshold: 0.9, // larger number = muting is easier
+				fsrMuteThreshold: 0.85, // larger number = muting is easier
 				fmId: j + 20,
 				relTime: 0.2,
 				server: s
