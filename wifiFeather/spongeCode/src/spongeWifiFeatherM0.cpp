@@ -17,9 +17,11 @@ const byte ESC_END=220;
 const byte ESC_ESC=221;
 
 
-// const char* ssid     = "mmLinksysEA7500-2.4";
+const char* ssid     = "mmLinksysEA7500-2.4";
+// const char* ssid     = "Namaste";
 // const char* ssid     = "sideroxylon";
-// const char* password = "ddcgrvc4zw";
+const char* password = "ddcgrvc4zw";
+// const char* password = "2bon2btitq";
  
 WiFiUDP udp; // A UDP instance to let us send and receive packets over UDP
 // const IPAddress outIp(192,168,109,103); // remote IP of your computer
@@ -32,6 +34,8 @@ const unsigned int localPort = 50502; // local port to listen for OSC packets
 // const int butPins[10] = { 0,1,20,21,5,6,9,10,11,12 };
 // GPIO 9 can be used as A7 to monitor battery voltage.
 // Use GPIO 16 (A2) instead.
+// Pour sponge Ana, remplacer la pin 21 par pin 13.
+// Voir notes.org dans dossier spongeCode
 const int butPins[10] = { 0,1,20,21,5,6,16,10,11,12 };
 const int ledPin = 17; // Controler pin for LED strip.
 
@@ -61,9 +65,9 @@ void setup(){
   // Serial.print("Connecting to ");
   // Serial.println(ssid);
   
-  // WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);
   // WiFi.begin(ssid,password);
-  WiFi.beginProvision();
+  // WiFi.beginProvision();
   
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
