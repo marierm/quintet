@@ -44,7 +44,7 @@
 	// ];
 	// With sudafed
 	~ipsPrefix = "192.168.0."; // for sudafed
-	~ips = [195,126,104,174];
+	~ips = [194,126,104,174];
 	// ~spongeNames = ["stripes", "flowers", "ana", "zebra"];
 	~transpose = 0;
 	~sponges = IdentityDictionary.new();
